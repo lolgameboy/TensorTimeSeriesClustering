@@ -16,88 +16,45 @@ class Decomp:
         self.term_list = term_list
 
 
-def slow_ACA(n, m, rank):
-    test_matrix = np.random.random((5, 5))
-    print(test_matrix)
+def ACA(n, m, rank):
+    test_matrix = np.random.random((n, m))
 
     elem, max_pos = sample_max_element(test_matrix, 5)
-
     # Initial decomp consists of this first vector
     firstTerm = DecompTerm(1/elem, test_matrix[:, max_pos[1]], test_matrix[max_pos[0], :])
+
     decomp = Decomp(5, 5, [firstTerm])
 
-    last_pos = max_pos[0]
+
 
     for i in range(0, rank):
-        mat = full_matrix(decomp)
-        last_v = row_at(decomp, last_pos)
+        last_row = decomp.term_list[-1].row
 
-        # find max element of last vector in decomposition
+        # find max element of last row in decomposition
         max_e = 0
-        max_index = 0
-        for k in range(len(last_v)):
-            if max_e < last_v[k]:
-                max_e = last_v[k]
-                max_index = k
+        max_column_index = 0
+        for k in range(len(last_row)):
+            if max_e < last_row[k]:
+                max_e = last_row[k]
+                max_column_index = k
 
-        residu = test_matrix - mat
-        new_column = residu[:, k]
-        print("new col")
-        print(new_column)
+        residu = test_matrix - full_matrix(decomp)
+        new_column = residu[:, max_column_index]
 
-        if i % 2 == 0:  # If i is even, the next vector we need in our decomposition is a column
-            for l in range(m):
-                if matrix[l, maxPos[1]] == -1:
-                    matrix[l, maxPos[1]] = random.random()
-            residu = np.matrix(matrix[:, maxPos[1]]) - column_at(decomp, maxPos[1])
-            decomp = np.vstack((decomp, residu))
-        else:
-            for l in range(n):
-                if matrix[maxPos[0], l] == -1:
-                    matrix[maxPos[0], l] = random.random()
-            residu = np.matrix(matrix[maxPos[0], :]) - row_at(decomp, maxPos[0])
-            decomp = np.vstack((decomp, residu))
-
-
-def ACA(n, m, rank):
-    test_matrix = np.random.random((5, 5))
-    print(test_matrix)
-
-    elem, max_pos = sample_max_element(test_matrix, 5)
-
-    # Initial decomp consists of this first vector
-    decomp = np.array([test_matrix[:, max_pos[1]] / elem])
-    print(decomp)
-
-    for i in range(1, rank * 2):  # Times 2 because we need 2 vectors per rank
-
-        # find max element of last vector in decomposition
         max_e = 0
-        max_index = 0
-        lastV = decomp[-1]
-        print(lastV)
-        for k in range(len(lastV)):
-            if max_e < lastV[0, k]:
-                max_e = lastV[0, k]
-                maxIndex = k
+        max_row_index = 0
+        for k in range(len(new_column)):
+            if max_e < new_column[k]:
+                max_e = new_column[k]
+                max_row_index = k
 
+        new_row = residu[max_row_index, :]
+        new_factor = 1/residu[max_row_index, max_column_index]
 
-        if i % 2 == 0:  # If i is even, the next vector we need in our decomposition is a column
-            for l in range(m):
-                if matrix[l, maxPos[1]] == -1:
-                    matrix[l, maxPos[1]] = random.random()
-            residu = np.matrix(matrix[:, maxPos[1]]) - column_at(decomp, maxPos[1])
-            decomp = np.vstack((decomp, residu))
-        else:
-            for l in range(n):
-                if matrix[maxPos[0], l] == -1:
-                    matrix[maxPos[0], l] = random.random()
-            residu = np.matrix(matrix[maxPos[0], :]) - row_at(decomp, maxPos[0])
-            decomp = np.vstack((decomp, residu))
+        new_term = DecompTerm(new_factor, new_column, new_row)
+        decomp.term_list.append(new_term)
 
-
-
-    return decomp, matrix
+    return decomp, test_matrix
 
 
 def sample_max_element(matrix, tries):
@@ -119,7 +76,7 @@ def sample_max_element(matrix, tries):
 def element_at(decomp, i, j):
     e = 0
     for k in range(len(decomp.term_list)):
-        e += decomp.term_list[k].column[i] * decomp.term_list[k].row[j] * decomp.term_list[k].factor
+        e += np.outer(decomp.term_list[k].column[i], decomp.term_list[k].row[j]) * decomp.term_list[k].factor
     return e
 
 
@@ -140,14 +97,14 @@ def column_at(decomp, j):
 def full_matrix(decomp):
     matrix = np.outer(decomp.term_list[0].column, decomp.term_list[0].row)
     matrix *= decomp.term_list[0].factor
-    for k in range(len(decomp.term_list)):
-        matrix += np.outer(decomp.term_list[0].column, decomp.term_list[0].row)
-        matrix *= decomp.term_list[0].factor
+    for k in range(1, len(decomp.term_list)):
+        matrix += np.outer(decomp.term_list[k].column, decomp.term_list[k].row) * decomp.term_list[k].factor
     return matrix
 
-
-dec, mat = slow_ACA(4, 4, 2)
-print(dec)
+# Disable scientific notation in output
+np.set_printoptions(suppress=True, precision=3)
+dec, mat = ACA(8, 8, 3)
+print("RESULTS")
 print(mat)
-print(mat[2, 3])
-print(element_at(dec, 2, 3))
+print(full_matrix(dec))
+print(mat-full_matrix(dec))
