@@ -24,7 +24,7 @@ def build_tensor(amount_of_slices=None, amount_of_sensors=None):
     # build a slice for each sensor
     for sensor in sensor_names[:n]:
         matrix = np.zeros((n,n))
-        print(f"at sensor {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{n}")
+        print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{n}")
 
         for i in range(n):
             # get sensor data from skeleton[i] (i.e. return data of the sensor column)
@@ -40,7 +40,7 @@ def build_tensor(amount_of_slices=None, amount_of_sensors=None):
                 # symmetrical slice
                 matrix[i, j] = distance
                 matrix[j, i] = distance
-            print("<" + (i+1)*"#" + (n-i-1)*"-" + ">", end='\r')
+            print("<" + (2*(sum(range(n)) - sum(range(n-i)))//(n))*"#" + (2*(sum(range(n-i)))//(n))*"-" + ">", end='\r')
 
         tensor.append(matrix)
 
