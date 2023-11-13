@@ -5,7 +5,7 @@ from DataTest import DAL
 
 dataset = "amie-kinect-data.hdf"
 
-def build_tensor(amount_of_slices=None, amount_of_sensors=None):
+def build_tensor(amount_of_slices=None, sensors_per_slice=None):
     dal = DAL(dataset)
     overview = dal.overview()
     skeletons = overview["df_key"]
@@ -15,16 +15,16 @@ def build_tensor(amount_of_slices=None, amount_of_sensors=None):
     sensor_names = skeleton0.columns
     
     # limit amount of sensors to include
-    if amount_of_sensors is not None:
-        n = amount_of_sensors
+    if sensors_per_slice is not None:
+        n = sensors_per_slice
     else:
         n = len(skeletons) # 186 different skeletons for AMIE dataset
 
     tensor = []
     # build a slice for each sensor
-    for sensor in sensor_names[:n]:
+    for sensor in sensor_names:
         matrix = np.zeros((n,n))
-        print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{n}")
+        print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{amount_of_slices}")
 
         for i in range(n):
             # get sensor data from skeleton[i] (i.e. return data of the sensor column)
@@ -50,8 +50,17 @@ def build_tensor(amount_of_slices=None, amount_of_sensors=None):
     
     return tensor
 
-def calc_element():
-    pass
+def same_tensor_test(amount_of_slices, sensors_per_slice):
+    path = "saved_tensors/full_tensor.npy"
+    big_boi = np.load(path)
+    myTensor = build_tensor(amount_of_slices, sensors_per_slice)
+    for k in range(amount_of_slices):
+        matrix = []
+        for i in range(sensors_per_slice):
+            row = []
+            for j in range(sensors_per_slice):
+                assert big_boi[k, j, i] == myTensor[k][j][i]
+    print("---Tensor Test Passed---")
 
 def save_overview():
     dal = DAL(dataset)
@@ -59,5 +68,6 @@ def save_overview():
     df = pd.DataFrame(overview)
     df.to_csv("overview.csv")
 
-tensor = build_tensor(20, 20)
-print(tensor)
+#tensor = build_tensor(20, 20)
+#print(tensor)
+same_tensor_test(20, 5)
