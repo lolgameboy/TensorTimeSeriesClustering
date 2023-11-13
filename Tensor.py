@@ -20,6 +20,11 @@ def build_tensor(amount_of_slices=None, sensors_per_slice=None):
     else:
         n = len(skeletons) # 186 different skeletons for AMIE dataset
 
+    # preload sensor data from skeletons
+    sensors = []
+    for i in range(n):
+        sensors.append(dal.get(skeletons[i]))
+
     tensor = []
     # build a slice for each sensor
     for sensor in sensor_names:
@@ -27,16 +32,15 @@ def build_tensor(amount_of_slices=None, sensors_per_slice=None):
         print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{amount_of_slices}")
 
         for i in range(n):
-            # get sensor data from skeleton[i] (i.e. return data of the sensor column)
-            time_series1 = dal.get(skeletons[i]).loc[:, sensor].values
+            # get sensor data from skeleton[i]
+            time_series1 = sensors[i].loc[:, sensor].values
 
             for j in range(i+1, n):
                 # get sensor data from skeleton[j]
-                time_series2 = dal.get(skeletons[j]).loc[:, sensor].values
+                time_series2 = sensors[j].loc[:, sensor].values
 
                 # calculate DTW distance (using pure c compiled function for speed:) )
                 distance = dtaidistance.dtw.distance(time_series1, time_series2, use_c=True)
-
                 # symmetrical slice
                 matrix[i, j] = distance
                 matrix[j, i] = distance
