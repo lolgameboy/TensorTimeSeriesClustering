@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def dynamic_time_warping(series1, series2):
     n = series1.size
 
