@@ -108,3 +108,4 @@ class TensorDecomp:
         for t in range(1, len(tlist)):
             tensor += tlist[t].full_tensor
         return tensor
+

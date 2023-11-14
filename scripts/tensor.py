@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import dtaidistance
-from DataTest import DAL
+from scripts.data_class import DAL
 
 dataset = "amie-kinect-data.hdf"
 
