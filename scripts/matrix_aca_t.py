@@ -28,7 +28,7 @@ def matrix_aca_t(tensor, max_rank):
         tube_residu = abs(tube - decomp_tube)
 
         # find biggest element in tube and make k the slice index of this element
-        k = argmax_tube(residu)
+        k = argmax_vector(residu)
 
         # add term (delta, slice_residu, tube_residu) in decomposition
         decomp.add(tensor[k,i,j], matrix_residu, tube_residu)
@@ -50,3 +50,13 @@ def sample_tensor(tensor, tries):
             max_pos = [i, j, k]
 
     return max_e, max_pos
+
+# find biggest element in matrix and return its index
+def argmax_matrix(matrix):
+    #TODO
+    return (0, 0)
+
+# find biggest element in vector and return its index
+def argmax_vector(vector):
+    #TODO
+    return 0
