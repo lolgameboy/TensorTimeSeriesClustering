@@ -5,7 +5,11 @@ from DataTest import DAL
 
 dataset = "amie-kinect-data.hdf"
 
-def build_tensor(amount_of_slices=None, sensors_per_slice=None):
+# builds distancetensor from the dataset located at ./data/dataset (should be the AMIE dataset)
+#  > max_slices: limits amount of frontal slices in tensor.
+#  > sensors_per_slice: limits amount of sensors that should be included in 1 slice,
+#                       determines the size of a frontal slice.
+def build_tensor(max_slices=None, sensors_per_slice=None):
     dal = DAL(dataset)
     overview = dal.overview()
     skeletons = overview["df_key"]
@@ -29,7 +33,7 @@ def build_tensor(amount_of_slices=None, sensors_per_slice=None):
     # build a slice for each sensor
     for sensor in sensor_names:
         matrix = np.zeros((n,n))
-        print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{amount_of_slices}")
+        print(f"processing {sensor}: {np.where(sensor_names.values == sensor)[0][0] + 1}/{max_slices}")
 
         for i in range(n):
             # get sensor data from skeleton[i]
@@ -49,7 +53,7 @@ def build_tensor(amount_of_slices=None, sensors_per_slice=None):
         tensor.append(matrix)
 
         # limited amount of slices to include
-        if amount_of_slices is not None and len(tensor) == amount_of_slices:
+        if max_slices is not None and len(tensor) == max_slices:
             break
     
     return tensor
