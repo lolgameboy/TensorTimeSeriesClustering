@@ -6,9 +6,9 @@ from structs import *
 def ACA(n, m, rank):
     test_matrix = np.random.random((n, m))
 
-    elem, max_pos = sample_max_element(test_matrix, 5)
+    elem, (i, j) = sample_matrix(test_matrix, 5)
     # Initial decomp consists of this first vector
-    firstTerm = MatrixDecompTerm(1 / elem, test_matrix[:, max_pos[1]], test_matrix[max_pos[0], :])
+    firstTerm = MatrixDecompTerm(1 / elem, test_matrix[:, j], test_matrix[i, :])
 
     decomp = MatrixDecomp(5, 5, [firstTerm])
 
@@ -36,8 +36,7 @@ def ACA(n, m, rank):
         new_row = residu[max_row_index, :]
         new_factor = 1/residu[max_row_index, max_column_index]
 
-        new_term = MatrixDecompTerm(new_factor, new_column, new_row)
-        decomp.term_list.append(new_term)
+        decomp.add(new_factor, new_column, new_row)
 
     return decomp, test_matrix
 

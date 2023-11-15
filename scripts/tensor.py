@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import dtaidistance
-from scripts.data_class import DAL
+from data_class import DAL
 
 dataset = "amie-kinect-data.hdf"
 
@@ -17,11 +17,15 @@ def build_tensor(max_slices=None, slice_size=None):
     skeleton0 = dal.get(skeletons[0])
     sensor_names = skeleton0.columns
     
-    # limit amount of sensors to include
+    # limit dimensions of tensor
+    if max_slices is not None:
+        k = max_slices
+    else:
+        k = len(sensor_names) # 75 sensors for AMIE dataset
     if slice_size is not None:
         n = slice_size
     else:
-        n = len(skeletons) # 186 different skeletons for AMIE dataset
+        n = len(skeletons) # 186 skeletons for AMIE dataset
 
     # preload sensor data from skeletons
     sensors = []
@@ -52,10 +56,10 @@ def build_tensor(max_slices=None, slice_size=None):
         tensor.append(matrix)
 
         # limited amount of slices to include
-        if max_slices is not None and len(tensor) == max_slices:
+        if len(tensor) >= k:
             break
     
-    return tensor
+    return np.array(tensor)
 
 def same_tensor_test(amount_of_slices, sensors_per_slice):
     path = "saved_tensors/full_tensor.npy"
@@ -66,7 +70,7 @@ def same_tensor_test(amount_of_slices, sensors_per_slice):
         for i in range(sensors_per_slice):
             row = []
             for j in range(sensors_per_slice):
-                assert big_boi[k, j, i] == myTensor[k][j][i]
+                assert big_boi[k, j, i] == myTensor[k, j, i]
     print("---Tensor Test Passed---")
 
 def save_overview():
@@ -75,6 +79,8 @@ def save_overview():
     df = pd.DataFrame(overview)
     df.to_csv("overview.csv")
 
-#tensor = build_tensor(20, 20)
+#tensor = build_tensor(3, 4)
 #print(tensor)
-same_tensor_test(20, 5)
+#print(tensor[0,:,:])
+#print(tensor)
+#same_tensor_test(20, 5)

@@ -32,10 +32,14 @@ class TensorDecompTerm:
 
 
 class MatrixDecomp:
-    def __init__(self, n, m, term_list):
+    def __init__(self, n, m, term_list=[]):
         self.n = n
         self.m = m
         self.term_list = term_list
+    
+    def add(self, factor, column, row):
+        term = MatrixDecompTerm(factor, column, row)
+        self.term_list.append(term)
 
     def element_at(self, i, j):
         e = 0
@@ -65,11 +69,15 @@ class MatrixDecomp:
 
 
 class TensorDecomp:
-    def __init__(self, N, M, K, term_list):
+    def __init__(self, K, N, M, term_list=[]):
+        self.K = K
         self.N = N
         self.M = M
-        self.K = K
         self.term_list = term_list
+
+    def add(self, factor, column, row, tube):
+        term = TensorDecompTerm(factor, column, row, tube)
+        self.term_list.append(term)
 
     def element_at(self, i, j, k):
         e = 0
