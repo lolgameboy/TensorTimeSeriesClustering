@@ -32,8 +32,13 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../.." />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.DataTest">
-    <configuration name="DataTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.ACA_matrix">
+    <configuration name="ACA_matrix" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TensorTimeSeriesClustering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -45,7 +50,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DataTest.py" />
+      <option name="SCRIPT_NAME" value="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts\ACA_matrix.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -54,7 +59,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="GettingStarted" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="data_class" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TensorTimeSeriesClustering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -66,7 +71,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GettingStarted.py" />
+      <option name="SCRIPT_NAME" value="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts\data_class.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -75,10 +80,14 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.ACA_matrix" />
+      <item itemvalue="Python.data_class" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.DataTest" />
-        <item itemvalue="Python.GettingStarted" />
+        <item itemvalue="Python.ACA_matrix" />
+        <item itemvalue="Python.data_class" />
       </list>
     </recent_temporary>
   </component>
