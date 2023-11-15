@@ -7,9 +7,8 @@ dataset = "amie-kinect-data.hdf"
 
 # builds distancetensor from the dataset located at ./data/dataset (should be the AMIE dataset)
 #  > max_slices: limits amount of frontal slices in tensor.
-#  > sensors_per_slice: limits amount of sensors that should be included in 1 slice,
-#                       determines the size of a frontal slice.
-def build_tensor(max_slices=None, sensors_per_slice=None):
+#  > sensors_per_slice = n: determines the size of the symmetrical n x n frontal slices.
+def build_tensor(max_slices=None, slice_size=None):
     dal = DAL(dataset)
     overview = dal.overview()
     skeletons = overview["df_key"]
@@ -19,8 +18,8 @@ def build_tensor(max_slices=None, sensors_per_slice=None):
     sensor_names = skeleton0.columns
     
     # limit amount of sensors to include
-    if sensors_per_slice is not None:
-        n = sensors_per_slice
+    if slice_size is not None:
+        n = slice_size
     else:
         n = len(skeletons) # 186 different skeletons for AMIE dataset
 
