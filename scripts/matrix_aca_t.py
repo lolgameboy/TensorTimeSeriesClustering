@@ -10,7 +10,7 @@ from tensor import build_tensor
 def matrix_aca_t(tensor, max_rank):
     # initialise decomposition
     (K, N, M) = tensor.shape
-    decomp = TensorDecomp(K, N, M)
+    decomp = TensorDecomp(K, N, M, [])
 
     # sample some elements of tensor
     _, (k, _, _) = sample_tensor(tensor, 3)

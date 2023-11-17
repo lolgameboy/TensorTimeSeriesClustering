@@ -32,7 +32,7 @@ class TensorDecompTerm:
 
 
 class MatrixDecomp:
-    def __init__(self, n, m, term_list=[]):
+    def __init__(self, n, m, term_list):
         self.n = n
         self.m = m
         self.term_list = term_list
@@ -69,7 +69,7 @@ class MatrixDecomp:
 
 
 class TensorDecomp:
-    def __init__(self, K, N, M, term_list=[]):
+    def __init__(self, K, N, M, term_list):
         self.K = K
         self.N = N
         self.M = M
