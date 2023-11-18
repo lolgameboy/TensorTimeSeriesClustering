@@ -7,7 +7,7 @@ def ACA(n, m, rank):
     test_matrix = np.random.random((n, m))
 
     elem, (i, j) = sample_matrix(test_matrix, 5)
-    # Initial decomp consists of this first vector
+    # Initial decomp consists of this first vector #TODO wrm niet in loop gaan (kolom berekenen, delta zoeken, etc...)
     firstTerm = MatrixDecompTerm(1 / elem, test_matrix[:, j], test_matrix[i, :])
 
     decomp = MatrixDecomp(5, 5, [firstTerm])
@@ -15,7 +15,7 @@ def ACA(n, m, rank):
     for i in range(0, rank):
         last_row = decomp.term_list[-1].row
 
-        # find max element of last row in decomposition
+        # find max element of last row in decomposition #TODO prevent picking same delta?
         max_e = 0
         max_column_index = 0
         for k in range(len(last_row)):
@@ -23,7 +23,7 @@ def ACA(n, m, rank):
                 max_e = last_row[k]
                 max_column_index = k
 
-        residu = test_matrix - decomp.full_matrix()
+        residu = test_matrix - decomp.full_matrix() #TODO wrm niet enkel de kolom berekenen?
         new_column = residu[:, max_column_index]
 
         max_e = 0

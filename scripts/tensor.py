@@ -70,7 +70,7 @@ def same_tensor_test(amount_of_slices, sensors_per_slice):
         for i in range(sensors_per_slice):
             row = []
             for j in range(sensors_per_slice):
-                assert big_boi[k, j, i] == myTensor[k, j, i]
+                assert big_boi[k, i, j] == myTensor[k, i, j]
     print("---Tensor Test Passed---")
 
 def save_overview():

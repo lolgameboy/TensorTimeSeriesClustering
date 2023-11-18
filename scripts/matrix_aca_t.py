@@ -18,20 +18,16 @@ def matrix_aca_t(tensor, max_rank):
     for rank in range(max_rank):
 
         # calculate residu of slice of k
-        matrix = tensor[k,:,:] # 'expensive' step
-        decomp_matrix = decomp.matrix_at(k)
-        matrix_residu = abs(matrix - decomp_matrix)
+        matrix_residu = abs(tensor[k,:,:] - decomp.matrix_at(k))
 
         # find biggest element in this slice (this is delta)
         (i, j) = argmax_matrix(matrix_residu)
 
         # calculate residu of tube of delta
-        tube = tensor[:,i,j] # 'expensive' step
-        decomp_tube = decomp.tube_at(i, j)
-        tube_residu = abs(tube - decomp_tube)
+        tube_residu = abs(tensor[:,i,j] - decomp.tube_at(i, j))
 
-        # find biggest element in tube
-        k = argmax_vector(tube_residu)
+        # find biggest element in tube (that isn't delta)
+        k = argmax_vector(tube_residu) #TODO prevent picking delta again?
 
         # add term
         decomp.add(tensor[k,i,j], matrix_residu, tube_residu)
