@@ -1,5 +1,6 @@
 import random
 
+
 # Takes 'tries' elements from the given numpy matrix and returns the position of the largest one
 def sample_matrix(matrix, tries):
     (n, m) = matrix.shape
@@ -14,7 +15,8 @@ def sample_matrix(matrix, tries):
             max_e = e
             max_pos = (i, j)
 
-    return max_e, max_pos
+    return max_pos
+
 
 # Takes 'tries' elements from the given numpy tensor and returns the position of the largest one
 def sample_tensor(tensor, tries):
@@ -33,6 +35,7 @@ def sample_tensor(tensor, tries):
 
     return max_e, max_pos
 
+
 # find biggest element in matrix and return its index
 def argmax_matrix(matrix):
     (n, m) = matrix.shape
@@ -48,16 +51,17 @@ def argmax_matrix(matrix):
 
     return max_pos
 
-# find biggest element in vector and return its index
-def argmax_vector(vector):
+
+# find biggest element in vector (ignoring ignore_index) and return its index
+def argmax_vector(vector, ignore_index):
     n = vector.size
     max_e = -99999
     max_pos = -1
 
     for i in range(n):
         e = vector[i]
-        if max_e < e:
+        if max_e < e and i != ignore_index:
             max_e = e
             max_pos = i
 
-    return i
+    return max_pos

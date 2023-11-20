@@ -37,8 +37,8 @@
       <recent name="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.ACA_matrix">
-    <configuration name="ACA_matrix" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.aca_matrix">
+    <configuration name="aca_matrix" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TensorTimeSeriesClustering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -50,7 +50,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts\ACA_matrix.py" />
+      <option name="SCRIPT_NAME" value="C:\Bachelor Informatica\Bachelorproef\Repository\TensorTimeSeriesClustering\scripts\aca_matrix.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -81,12 +81,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.ACA_matrix" />
       <item itemvalue="Python.data_class" />
+      <item itemvalue="Python.aca_matrix" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.ACA_matrix" />
+        <item itemvalue="Python.aca_matrix" />
         <item itemvalue="Python.data_class" />
       </list>
     </recent_temporary>
