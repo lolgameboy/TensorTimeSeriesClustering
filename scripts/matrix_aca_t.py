@@ -9,11 +9,11 @@ from tensor import build_tensor
 #  > max_rank: amount of terms to include in decomposition
 def matrix_aca_t(tensor, max_rank):
     # initialise decomposition
-    (K, N, M) = tensor.shape
+    K, N, M = tensor.shape
     decomp = TensorDecomp(K, N, M, [])
 
     # sample some elements of tensor
-    _, (k, _, _) = sample_tensor(tensor, 3)
+    (k, _, _) = argmax_samples(sample_tensor(tensor, 3))
 
     for rank in range(max_rank):
 
@@ -26,8 +26,8 @@ def matrix_aca_t(tensor, max_rank):
         # calculate residu of tube of delta
         tube_residu = abs(tensor[:,i,j] - decomp.tube_at(i, j))
 
-        # find biggest element in tube (that isn't delta)
-        k = argmax_vector(tube_residu) #TODO prevent picking delta again?
+        # find biggest element in tube (don't pick delta again)
+        k = argmax_vector(tube_residu, k) #TODO prevent picking delta again
 
         # add term
         decomp.add(tensor[k,i,j], matrix_residu, tube_residu)

@@ -6,10 +6,10 @@ import numpy as np
 #  > max_approx: amount of terms to approximate matrix in a single term with ACA
 def vector_aca_t(tensor, max_rank, max_approx):
     # initialise decomposition
-    (K, N, M) = tensor.shape
+    K, N, M = tensor.shape
     decomp = Tensordecomp()
 
-    # sample some elements of tensor (10 different elements)
+    # sample some elements of tensor
     S = sample_tensor(tensor, 10)
     (k, i, j) = argmax_samples(S)
 
@@ -28,7 +28,12 @@ def vector_aca_t(tensor, max_rank, max_approx):
         k = argmax_vector(tube_residu, k) #TODO prevent picking delta again
 
         # add term
-        decomp.add(tensor[k,i,j], aca_decomp, tube_residu) #TODO is dit correct?
+        decomp.add(tensor[k,i,j], aca_decomp, tube_residu)
+
+        # update samples to pick new (k, i, j)
+        update_samples(S, aca_decomp, tube_residu)
+
+        (k, i, j) = argmax_samples(S)
 
     # return decomposition
     return decomp
