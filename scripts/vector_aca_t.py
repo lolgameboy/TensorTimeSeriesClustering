@@ -32,7 +32,6 @@ def vector_aca_t(tensor, max_rank, max_approx):
 
         # update samples to pick new (k, i, j)
         update_samples(S, aca_decomp, tube_residu)
-
         (k, i, j) = argmax_samples(S)
 
     # return decomposition
