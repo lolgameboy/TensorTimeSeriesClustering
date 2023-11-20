@@ -1,39 +1,52 @@
 import random
 
+# Takes 'amount' elements at random from the given numpy matrix and returns list with elements ((i,j), value)
+def sample_matrix(matrix, amount):
+    N, M = tensor.shape
+    samples = []
 
-# Takes 'tries' elements from the given numpy matrix and returns the position of the largest one
-def sample_matrix(matrix, tries):
-    (n, m) = matrix.shape
-    max_e = -99999
-    max_pos = (-1, -1)
+    for _ in range(amount):
+        i = random.randrange(0, N)
+        j = random.randrange(0, M)
+        
+        samples.append((i,j), matrix[i,j])
 
-    for k in range(tries):
-        i = random.randrange(0, n)
-        j = random.randrange(0, m)
-        e = matrix[i, j]  # Normally, this is where you'd perform an expensive DTW operation
-        if max_e < e:
-            max_e = e
-            max_pos = (i, j)
+    return np.array(samples)
 
-    return max_pos
+# Takes 'tries' elements at random from the given numpy tensor and returns list with elements ((k,i,j), value)
+def sample_tensor(tensor, amount):
+    K, N, M = tensor.shape
+    samples = []
 
-
-# Takes 'tries' elements from the given numpy tensor and returns the position of the largest one
-def sample_tensor(tensor, tries):
-    (K, N, M) = tensor.shape
-    max_e = -99999
-    max_pos = (-1, -1, -1)
-
-    for k in range(tries):
+    for _ in range(amount):
         k = random.randrange(0, K)
         i = random.randrange(0, N)
         j = random.randrange(0, M)
-        e = tensor[k, i, j]  # Normally, this is where you'd perform an expensive DTW operation
+        
+        samples.append((k,i,j), tensor[k,i,j])
+
+    return np.array(samples)
+
+# Returns index of sample with biggest value (both for matrix or tensor)
+def argmax_samples(samples):
+    max_e = -99999
+    max_pos = pos
+
+    for sample in samples:
+        pos, e = sample
+
         if max_e < e:
             max_e = e
-            max_pos = (k, i, j)
+            max_pos = pos
 
-    return max_e, max_pos
+    return max_pos
+
+def update_samples(samples, matrix_decomp, tube):
+    for u, sample in enumerate(samples):
+        (k, i, j), e = sample
+        e -= matrix_decomp.element_at(i, j) + tube[k]
+        samples[u] = ((k, i, j), e)
+    
 
 
 # find biggest element in matrix and return its index
