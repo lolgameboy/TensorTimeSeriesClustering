@@ -35,8 +35,8 @@ def matrix_aca_t(tensor, max_rank):
     # return decomposition
     return decomp
 
-test_tensor = build_tensor(10, 5)
-decomp = matrix_aca_t(test_tensor, 3)
+#test_tensor = build_tensor(10, 5)
+#decomp = matrix_aca_t(test_tensor, 3)
 
-print(test_tensor)
-print(decomp.full_tensor)
+#print(test_tensor)
+#print(decomp.full_tensor)
