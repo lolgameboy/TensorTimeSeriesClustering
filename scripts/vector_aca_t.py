@@ -28,7 +28,7 @@ def vector_aca_t(tensor, max_rank, max_approx):
         k = argmax_vector(tube_residu, k) #TODO prevent picking delta again
 
         # add term
-        decomp.add(tensor[k,i,j], aca_decomp, tube_residu)
+        decomp.add_matrix_term(tensor[k,i,j], aca_decomp, tube_residu)
 
         # update samples to pick new (k, i, j)
         update_samples(S, aca_decomp, tube_residu)

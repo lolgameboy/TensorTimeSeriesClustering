@@ -94,6 +94,10 @@ class TensorDecomp:
         term = TensorDecompTerm(factor, column, row, tube)
         self.term_list.append(term)
 
+    def add_matrix_term(self, factor, matrix_decomp, tube):
+        term = TensorDecompTermMatrix(factor, matrix_decomp, tube)
+        self.term_list.append(term)
+
     def element_at(self, i, j, k):
         e = 0
         tlist = self.term_list
