@@ -15,9 +15,9 @@ class MatrixDecompTerm:
 class TensorDecompTerm:
     def __init__(self, delta, column, row, tube):
         self.delta = delta
-        self.column = np.array(column)
-        self.row = np.array(row)
         self.tube = np.array(tube)
+        self.column = column
+        self.row = row
 
     def element_at(self, i, j, k):
         """Returns the element at position (i,j,k) of the tensor this term represents"""
@@ -29,6 +29,21 @@ class TensorDecompTerm:
         b = self.row
         c = self.tube
         return np.outer(a, np.outer(b, c)).reshape(a.shape[0], b.shape[0], c.shape[0]) * self.delta
+
+class TensorDecompTermMatrix:
+    def __init__(self, delta, matrix_decomp, tube):
+        self.delta = delta
+        self.matrix_decomp = matrix_decomp
+        self.tube = tube
+
+    def element_at(self, i, j, k):
+        """Returns the element at position (i,j,k) of the tensor this term represents"""
+        return self.matrix_decomp.element_at(i, j) * self.tube[k] * self.delta
+
+    def full_tensor(self):
+        """Returns the full tensor this term represents"""
+        a = self.matrix_decomp.full_matrix()
+        return np.outer(a, self.tube).reshape(a.shape[0], a.shape[1], self.tube.shape[0])
 
 
 class MatrixDecomp:
@@ -112,7 +127,7 @@ class TensorDecomp:
 
     def full_tensor(self):
         tlist = self.term_list
-        tensor = np.outer(tlist[0].column, tlist[0].row, tlist[0].tube) * tlist[0].delta
+        tensor = tlist[0].full_tensor
         for t in range(1, len(tlist)):
             tensor += tlist[t].full_tensor
         return tensor

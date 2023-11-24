@@ -21,6 +21,8 @@ def aca(test_matrix, max_rank):
         decomp.add(new_factor, new_column, new_row)
     return decomp
 
+print(np.array([[1,2],[4,5],[7,8]]))
+a = np.outer(np.array([[1,2],[4,5],[7,8]]), np.array([10,1,30])).reshape((3,2,3))
 
 # Disable scientific notation in output
 np.set_printoptions(suppress=True, precision=3)
