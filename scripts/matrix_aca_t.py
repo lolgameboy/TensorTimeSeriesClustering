@@ -18,25 +18,29 @@ def matrix_aca_t(tensor, max_rank):
     for rank in range(max_rank):
 
         # calculate residu of slice of k
-        matrix_residu = abs(tensor[k,:,:] - decomp.matrix_at(k))
+        matrix_residu = tensor[k,:,:] - decomp.matrix_at(k)
 
         # find biggest element in this slice (this is delta)
-        (i, j) = argmax_matrix(matrix_residu)
+        (i, j) = argmax_matrix(abs(matrix_residu))
 
         # calculate residu of tube of delta
-        tube_residu = abs(tensor[:,i,j] - decomp.tube_at(i, j))
-
-        # find biggest element in tube (don't pick delta again)
-        k = argmax_vector(tube_residu, k) #TODO prevent picking delta again
+        tube_residu = tensor[:,i,j] - decomp.tube_at(i, j)
 
         # add term
-        decomp.add(tensor[k,i,j], matrix_residu, tube_residu)
+        decomp.add_matrix_term(1/tube_residu[k], tube_residu, matrix_residu)
+
+        # find biggest element in tube (don't pick delta again)
+        k = argmax_vector(abs(tube_residu), k)
 
     # return decomposition
     return decomp
 
-#test_tensor = build_tensor(10, 5)
-#decomp = matrix_aca_t(test_tensor, 3)
+test_tensor = np.load("saved_tensors/full_tensor.npy")[0:15,0:20,0:20]
+decomp = matrix_aca_t(test_tensor, 5)
 
-#print(test_tensor)
-#print(decomp.full_tensor)
+np.set_printoptions(suppress=True, precision=3)
+
+for i in range(16):
+    decomp = matrix_aca_t(test_tensor, i)
+    
+    print(f'rank {i} with norm = {np.linalg.norm(test_tensor-decomp.full_tensor())/np.linalg.norm(test_tensor)}')
