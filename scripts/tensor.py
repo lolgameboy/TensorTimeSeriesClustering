@@ -5,10 +5,14 @@ from data_class import DAL
 
 dataset = "amie-kinect-data.hdf"
 
-# builds distancetensor from the dataset located at ./data/dataset (should be the AMIE dataset)
-#  > max_slices: limits amount of frontal slices in tensor.
-#  > sensors_per_slice = n: determines the size of the symmetrical n x n frontal slices.
+
 def build_tensor(max_slices=None, slice_size=None):
+    '''
+    builds distance tensor from the dataset located at ./data/dataset (should be the AMIE dataset)
+    :param max_slices: limits amount of frontal slices in tensor.
+    :param slice_size: determines the size (n) of the symmetrical n x n frontal slices.
+    :return: a numpy array containing the distance tensor tensor
+    '''
     dal = DAL(dataset)
     overview = dal.overview()
     skeletons = overview["df_key"]

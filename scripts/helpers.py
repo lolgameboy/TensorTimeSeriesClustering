@@ -1,8 +1,14 @@
 import random
 import numpy as np
 
-# Takes 'amount' elements at random from the given numpy matrix and returns list with elements ((i,j), value)
+#
 def sample_matrix(matrix, amount):
+    '''
+    Takes 'amount' elements at random from the given numpy matrix and returns list with elements ((i,j), value)
+    :param matrix: Matrix to sample
+    :param amount: Amount of samples
+    :return: A list of samples and their position in given matrix
+    '''
     N, M = matrix.shape
     samples = []
 
@@ -14,8 +20,15 @@ def sample_matrix(matrix, amount):
 
     return samples
 
-# Takes 'tries' elements at random from the given numpy tensor and returns list with elements ((k,i,j), value)
+
 def sample_tensor(tensor, amount):
+    '''
+    Takes elements at random from a numpy tensor and returns list with elements ((k,i,j), value)
+    :param tensor: Numpy tensor to sample
+    :param amount: Amount of samples to return
+    :return: List of samples and their position in given tensor
+    '''
+
     K, N, M = tensor.shape
     samples = []
 
@@ -28,9 +41,11 @@ def sample_tensor(tensor, amount):
 
     return samples
 
-# Takes list of samples (from sample_matrix or sample_tensor)
-# Returns index of sample with biggest value
 def argmax_samples(samples):
+    '''
+    :param samples: List of samples (from sample_matrix or sample_tensor)
+    :return: Index of sample with biggest value
+    '''
     max_e = -99999
     max_pos = -1
 
@@ -43,19 +58,20 @@ def argmax_samples(samples):
 
     return max_pos
 
-# Takes list of samples (from sample_tensor) and a last decomposition term
-# Returns list with samples with updated values
-# Updated value = value of sample in residu given the new term is added in the decomposition
 def update_samples_tensor(samples, matrix_decomp, tube):
+    '''
+    Takes list of samples (from sample_tensor) and a last decomposition term
+    Returns list with samples with updated values
+    Updated value = value of sample in residu given the new term is added in the decomposition
+    '''
     for u, sample in enumerate(samples):
         (k, i, j), e = sample
         e -= matrix_decomp.element_at(i, j) + tube[k]
         samples[u] = ((k, i, j), e)
-    
 
 
-# find biggest element in matrix and return its index
 def argmax_matrix(matrix):
+    '''Find biggest element in matrix and return its index'''
     (n, m) = matrix.shape
     max_e = -99999
     max_pos = (-1, -1)
@@ -70,8 +86,9 @@ def argmax_matrix(matrix):
     return max_pos
 
 
-# find biggest element in vector (ignoring ignore_index) and return its index
+
 def argmax_vector(vector, ignore_index=-1):
+    '''Find biggest element in vector (ignoring ignore_index) and return its index'''
     n = vector.size
     max_e = -99999
     max_pos = -1

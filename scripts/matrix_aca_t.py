@@ -4,10 +4,13 @@ from structs import *
 from tensor import build_tensor
 
 
-# returns matrix ACA-T decomposition of given tensor
-#  > tensor: 3d numpyarray of full tensor to decompose
-#  > max_rank: amount of terms to include in decomposition
 def matrix_aca_t(tensor, max_rank):
+    '''
+    :param tensor: 3d numpyarray of full tensor to decompose
+    :param max_rank: amount of terms to include in decomposition
+    :return: matrix ACA-T decomposition of given tensor
+    '''
+
     # initialise decomposition
     K, N, M = tensor.shape
     decomp = TensorDecomp(K, N, M, [])
@@ -35,8 +38,7 @@ def matrix_aca_t(tensor, max_rank):
     # return decomposition
     return decomp
 
-test_tensor = np.load("saved_tensors/full_tensor.npy")[0:15,0:20,0:20]
-decomp = matrix_aca_t(test_tensor, 5)
+test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:15,0:20,0:20]
 
 np.set_printoptions(suppress=True, precision=3)
 

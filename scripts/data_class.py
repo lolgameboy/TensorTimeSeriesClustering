@@ -4,7 +4,7 @@ import pandas as pd
 
 class DAL:
 
-    folder = "data/"
+    folder = "../data/"
 
     def __init__(self, name):
         self.datafile = self.folder + name
