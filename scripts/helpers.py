@@ -58,15 +58,14 @@ def argmax_samples(samples):
 
     return max_pos
 
-def update_samples_tensor(samples, matrix_decomp, tube):
+def update_samples_tensor(samples, matrix_decomp, tube, delta):
     '''
     Takes list of samples (from sample_tensor) and a last decomposition term
-    Returns list with samples with updated values
     Updated value = value of sample in residu given the new term is added in the decomposition
     '''
     for u, sample in enumerate(samples):
         (k, i, j), e = sample
-        e -= matrix_decomp.element_at(i, j) + tube[k]
+        e -= (matrix_decomp.element_at(i, j) * tube[k]) / delta
         samples[u] = ((k, i, j), e)
 
 

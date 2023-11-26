@@ -8,7 +8,7 @@ def aca(test_matrix, max_rank, start_sample=None):
     decomp = MatrixDecomp(n, m, [])
 
     if start_sample is None:
-        i, j = sample_matrix(test_matrix, 5)
+        i, j = argmax_samples(sample_matrix(test_matrix, 5))
     else:
         i, j = start_sample
 
@@ -25,16 +25,3 @@ def aca(test_matrix, max_rank, start_sample=None):
         decomp.add(new_factor, new_column, new_row)
     
     return decomp, (i, j)
-
-print(np.array([[1,2],[4,5],[7,8]]))
-a = np.outer(np.array([[1,2],[4,5],[7,8]]), np.array([10,1,30])).reshape((3,2,3))
-
-# Disable scientific notation in output
-np.set_printoptions(suppress=True, precision=3)
-mat = np.random.random((10, 10))
-dec, _ = aca(mat, 5)
-print("RESULTS")
-print(mat - dec.full_matrix())
-
-#dt = TensorDecompTerm(1 / 9, [1, 2, 3], [3, 3, 4], [3, 4, 2])
-#print(dt.full_tensor())

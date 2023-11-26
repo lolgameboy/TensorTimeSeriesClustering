@@ -26,6 +26,7 @@ class TensorDecompTerm:
         a = self.matrix_decomp.full_matrix()
         return self.delta * np.outer(self.tube, a).reshape(self.tube.size, a.shape[0], a.shape[1])
 
+
 class TensorDecompTermMatrix:
     def __init__(self, delta, tube, matrix):
         self.delta = delta
