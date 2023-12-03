@@ -47,7 +47,7 @@ def argmax_samples(samples):
     :return: Index of sample with biggest value
     '''
     max_e = -99999
-    max_pos = -1
+    max_pos = None
 
     for sample in samples:
         pos, e = sample
@@ -65,7 +65,7 @@ def update_samples_tensor(samples, matrix_decomp, tube, delta):
     '''
     for u, sample in enumerate(samples):
         (k, i, j), e = sample
-        e -= (matrix_decomp.element_at(i, j) * tube[k]) / delta
+        e -= delta * (matrix_decomp.element_at(i, j) * tube[k])
         samples[u] = ((k, i, j), e)
 
 

@@ -9,7 +9,7 @@ class MatrixDecompTerm:
 
     def element_at(self, i, j):
         """Returns the element at position (i,j) of the matrix this term represents"""
-        return self.column[i] * self.row[j] * self.delta
+        return self.row[j] * self.column[i] * self.delta
 
 class TensorDecompTerm:
     def __init__(self, delta, tube, matrix_decomp):
@@ -71,8 +71,8 @@ class MatrixDecomp:
 
     def full_matrix(self):
         terms = self.term_list
-        matrix = np.outer(terms[0].column, terms[0].row) * terms[0].delta
-        for k in range(1, len(terms)):
+        matrix = np.zeros((self.n, self.m))
+        for k in range(len(terms)):
             matrix += np.outer(terms[k].column, terms[k].row) * terms[k].delta
         return matrix
 

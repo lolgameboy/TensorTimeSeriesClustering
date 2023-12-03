@@ -3,25 +3,25 @@ from helpers import *
 from structs import *
 
 
-def aca(test_matrix, max_rank, start_sample=None):
-    n, m = test_matrix.shape
+def aca(matrix, max_rank, start_sample=None):
+    n, m = matrix.shape
     decomp = MatrixDecomp(n, m, [])
 
     if start_sample is None:
-        i, j = argmax_samples(sample_matrix(test_matrix, 5))
+        i, j = argmax_samples(sample_matrix(matrix, 10))
     else:
         i, j = start_sample
 
     for rank in range(max_rank):
-        new_column = test_matrix[:, j] - decomp.column_at(j)
+        column_residu = matrix[:, j] - decomp.column_at(j)
 
-        i = argmax_vector(new_column, i)
+        i = argmax_vector(abs(column_residu))
 
-        new_row = test_matrix[i, :] - decomp.row_at(i)
-        new_factor = 1 / (test_matrix[i, j] - decomp.element_at(i, j))
+        row_residu = matrix[i, :] - decomp.row_at(i)
 
-        j = argmax_vector(new_row, j)
+        factor = 1 / (row_residu[j])
+        decomp.add(factor, column_residu, row_residu)
 
-        decomp.add(new_factor, new_column, new_row)
+        j = argmax_vector(abs(row_residu), j)
     
     return decomp, (i, j)

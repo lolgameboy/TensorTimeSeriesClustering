@@ -16,20 +16,22 @@ def vector_aca_t(tensor, max_rank, max_approx):
     decomp = TensorDecomp(K, N, M, [])
 
     # sample some elements of tensor
-    S = sample_tensor(tensor, 10)
+    #S = sample_tensor(tensor, 3)
+    S = [((0,0,2), tensor[0,0,2]), ((2,0,0), tensor[2,0,2]), ((2,1,0), tensor[2,1,0])]
     (k, i, j) = argmax_samples(S)
+
+    for sample in S:
+        idx, v = sample
+        print(idx)
 
     for rank in range(max_rank):
 
         # calculate ACA decomp of slice
-        matrix_residu = tensor[k,:,:] - decomp.matrix_at(k) #TODO how to make aca work without 'calculating' full matrix slice to give as parameter?
-        aca_decomp, (i, j) = aca(matrix_residu, max_approx, (i, j))  #TODO let aca also return index of next delta
+        matrix_residu = tensor[k,:,:] - decomp.matrix_at(k)
+        aca_decomp, (i, j) = aca(matrix_residu, max_approx, (i, j))
 
         # calculate residu of tube of delta
-        tube_residu = tensor[:,i,j] - decomp.tube_at(i, j) # NOTE AAN LOWIE: Ik denk da ge hierbij nog rekening
-                                                           # moet houden met de matrix_decomp die ge net hebt berekend
-                                                           # omda ge nu op positie tube_residu[k] een andere value kunt
-                                                           # hebben dan bij aca_decomp.element_at(i,j)
+        tube_residu = tensor[:,i,j] - decomp.tube_at(i, j)
 
         # add term
         decomp.add(1/tube_residu[k], tube_residu, aca_decomp)
@@ -38,17 +40,17 @@ def vector_aca_t(tensor, max_rank, max_approx):
         k = argmax_vector(abs(tube_residu), k)
 
         # update samples to pick new (k, i, j)
-        # TODO: update_samples_tensor(S, aca_decomp, tube_residu, tensor[k,i,j])
-        # TODO: (k, i, j) = argmax_samples(S)
+        update_samples_tensor(S, aca_decomp, tube_residu, 1/tube_residu[k])
+        (k, i, j) = argmax_samples(S)
 
     # return decomposition
     return decomp
 
-test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:15, 0:20, 0:20]
+test_tensor = np.load("saved_tensors/full_tensor.npy")[0:3, 0:4, 0:4]
 
 np.set_printoptions(suppress=True, precision=3)
 
-for i in range(16):
-    decomp = vector_aca_t(test_tensor, i, 3)
+for i in range(1, 3):
+    decomp = vector_aca_t(test_tensor, i, 1)
 
     print(f'rank {i} with norm = {np.linalg.norm(test_tensor - decomp.full_tensor()) / np.linalg.norm(test_tensor)}')

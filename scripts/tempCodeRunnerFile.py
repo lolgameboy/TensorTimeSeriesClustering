@@ -1,0 +1,1 @@
+np.linalg.norm(test_tensor - decomp.full_tensor()) / np.linalg.norm(test_tensor)
