@@ -16,13 +16,16 @@ def vector_aca_t(tensor, max_rank, max_approx):
     decomp = TensorDecomp(K, N, M, [])
 
     # sample some elements of tensor
-    #S = sample_tensor(tensor, 3)
-    S = [((0,0,2), tensor[0,0,2]), ((2,0,0), tensor[2,0,2]), ((2,1,0), tensor[2,1,0])]
-    (k, i, j) = argmax_samples(S)
+    # S = sample_tensor(tensor, 3)
+    # S = [((0,0,2), tensor[0,0,2]), ((2,0,0), tensor[2,0,2]), ((2,1,0), tensor[2,1,0])]
+    # (k, i, j) = argmax_samples(S)
 
-    for sample in S:
-        idx, v = sample
-        print(idx)
+    # for sample in S:
+    #     idx, v = sample
+    #     print(idx)
+
+    # Temp
+    k, i, j = 5, 4, 1
 
     for rank in range(max_rank):
 
@@ -40,17 +43,18 @@ def vector_aca_t(tensor, max_rank, max_approx):
         k = argmax_vector(abs(tube_residu), k)
 
         # update samples to pick new (k, i, j)
-        update_samples_tensor(S, aca_decomp, tube_residu, 1/tube_residu[k])
-        (k, i, j) = argmax_samples(S)
+        # update_samples_tensor(S, aca_decomp, tube_residu, 1/tube_residu[k])
+        # (k, i, j) = argmax_samples(S)
 
     # return decomposition
     return decomp
 
-test_tensor = np.load("saved_tensors/full_tensor.npy")[0:3, 0:4, 0:4]
+test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:30, 0:30, 0:30]
 
 np.set_printoptions(suppress=True, precision=3)
 
-for i in range(1, 3):
-    decomp = vector_aca_t(test_tensor, i, 1)
+for i in range(1, 15):
+    decomp = vector_aca_t(test_tensor, i, 7)
 
     print(f'rank {i} with norm = {np.linalg.norm(test_tensor - decomp.full_tensor()) / np.linalg.norm(test_tensor)}')
+    # print(test_tensor - decomp.full_tensor())
