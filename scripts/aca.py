@@ -26,6 +26,7 @@ def aca(matrix, max_rank, start_sample=None):
     
     return decomp, (i, j)
 
+'''
 test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:1, 0:5, 0:5]
 test_matrix = np.reshape(test_tensor, (5, 5))
 
@@ -44,3 +45,4 @@ for i in range(1, 6):
     print(test_matrix - decomp.full_matrix())
     print(f'rank {i} with norm = {np.linalg.norm(test_matrix2 - decomp2.full_matrix()) / np.linalg.norm(test_matrix2)}')
     print(test_matrix2 - decomp2.full_matrix())
+'''

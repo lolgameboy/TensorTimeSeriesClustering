@@ -48,13 +48,3 @@ def vector_aca_t(tensor, max_rank, max_approx):
 
     # return decomposition
     return decomp
-
-test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:30, 0:30, 0:30]
-
-np.set_printoptions(suppress=True, precision=3)
-
-for i in range(1, 15):
-    decomp = vector_aca_t(test_tensor, i, 7)
-
-    print(f'rank {i} with norm = {np.linalg.norm(test_tensor - decomp.full_tensor()) / np.linalg.norm(test_tensor)}')
-    # print(test_tensor - decomp.full_tensor())
