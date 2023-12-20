@@ -8,7 +8,7 @@ def aca(matrix, max_rank, start_sample=None):
     decomp = MatrixDecomp(n, m, [])
 
     if start_sample is None:
-        i, j = argmax_samples(sample_matrix(matrix, 10))
+        (i, j), _ = max_abs_samples(sample_matrix(matrix, 10))
     else:
         i, j = start_sample
 

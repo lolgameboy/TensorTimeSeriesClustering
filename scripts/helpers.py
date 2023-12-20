@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-#
+
 def sample_matrix(matrix, amount):
     '''
     Takes 'amount' elements at random from the given numpy matrix and returns list with elements ((i,j), value)
@@ -41,22 +41,23 @@ def sample_tensor(tensor, amount):
 
     return samples
 
-def argmax_samples(samples):
+
+def max_abs_samples(samples):
     '''
     :param samples: List of samples (from sample_matrix or sample_tensor)
-    :return: Index of sample with biggest value
+    :return: tuple (index, value) of sample with biggest absolute value
     '''
-    max_e = -99999
+    max_e = 0
     max_pos = None
 
     for sample in samples:
         pos, e = sample
 
-        if max_e < e:
+        if abs(max_e) <= abs(e):
             max_e = e
             max_pos = pos
 
-    return max_pos
+    return max_pos, max_e
 
 def update_samples_tensor(samples, matrix_decomp, tube, delta):
     '''
@@ -66,6 +67,12 @@ def update_samples_tensor(samples, matrix_decomp, tube, delta):
     for u, sample in enumerate(samples):
         (k, i, j), e = sample
         e -= delta * (matrix_decomp.element_at(i, j) * tube[k])
+        samples[u] = ((k, i, j), e)
+
+def update_samples_tensor_ineff(samples, tensor, decomp):
+    for u, sample in enumerate(samples):
+        (k, i, j), e = sample
+        e = tensor[k,i,j] - decomp.element_at(k, i, j)
         samples[u] = ((k, i, j), e)
 
 
@@ -83,7 +90,6 @@ def argmax_matrix(matrix):
                 max_pos = (i, j)
 
     return max_pos
-
 
 
 def argmax_vector(vector, ignore_index=-1):

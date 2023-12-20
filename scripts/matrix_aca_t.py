@@ -15,7 +15,7 @@ def matrix_aca_t(tensor, max_rank):
     decomp = TensorDecomp(K, N, M, [])
 
     # sample some elements of tensor
-    (k, _, _) = argmax_samples(sample_tensor(tensor, 3))
+    (k, _, _), _ = max_abs_samples(sample_tensor(tensor, 3))
 
     for rank in range(max_rank):
 
