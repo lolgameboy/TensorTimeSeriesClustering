@@ -1,7 +1,8 @@
 import random
 import numpy as np
+from sklearn.cluster import KMeans
 
-#
+
 def sample_matrix(matrix, amount):
     '''
     Takes 'amount' elements at random from the given numpy matrix and returns list with elements ((i,j), value)
@@ -98,3 +99,8 @@ def argmax_vector(vector, ignore_index=-1):
             max_pos = i
 
     return max_pos
+
+
+def k_means(vectors, n_clusters):
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init="auto").fit(vectors)
+    return kmeans.cluster_centers_, kmeans.labels_
