@@ -23,8 +23,12 @@ def aca(matrix, max_rank, start_sample=None):
         decomp.add(factor, column_residu, row_residu)
 
         j = argmax_vector(abs(row_residu), j)
-    
-    return decomp, (i, j)
+
+        if rank == 0:
+            I = i
+            J = j
+
+    return decomp, (I, J)
 
 '''
 test_tensor = np.load("../saved_tensors/full_tensor.npy")[0:1, 0:5, 0:5]

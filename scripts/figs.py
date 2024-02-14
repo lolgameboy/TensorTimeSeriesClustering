@@ -13,7 +13,7 @@ def plot_rel_err(method, ranks=range(5,51, 5), repeat=50, max_approx=None):
     :param max_approx: param only needed for vector ACA-T
     '''
 
-    print(f'Plotting relative error of {method.__name__} with ranks of {ranks} averaged out of {repeat} samples.')
+    print(f'Plotting relative error of {method.__name__} with ranks {list(ranks)} averaged out of {repeat} samples.')
 
     tensor = np.load("saved_tensors/full_tensor.npy")
     t_norm = np.linalg.norm(tensor)
@@ -26,7 +26,7 @@ def plot_rel_err(method, ranks=range(5,51, 5), repeat=50, max_approx=None):
         print(f'rank {rank}')
         rel_errs = []
         for i in range(repeat):
-            print(f'-', end='')
+            print(f'-', end="")
             if method == matrix_aca_t:
                 dp = method(tensor, rank)
             else:
@@ -44,7 +44,7 @@ def plot_rel_err(method, ranks=range(5,51, 5), repeat=50, max_approx=None):
         c = 'blue'
 
     plt.subplots()
-    plt.bar(ranks, avgs, width=2, yerr=stdevs, color='orange')
+    plt.bar(ranks, avgs, width=2, yerr=stdevs, color=c)
 
     plt.xlabel('Rang')
     plt.ylabel('Relatieve fout')
@@ -56,7 +56,7 @@ def plot_rel_err(method, ranks=range(5,51, 5), repeat=50, max_approx=None):
     plt.title(f'Relatieve fout van {method.__name__[0:6]}{d} ACA-T per rang')
     plt.xticks(ranks)
 
-    plt.savefig(f'figures/rel_fout_{method.__name__}{d}(rpt{repeat}).png')
+    plt.savefig(f'figures/rel_fout_{method.__name__}{d}(rpt{repeat})(rnk{ranks[-1]}).png')
     plt.show()
 
 def plot_rel_err_per_rel_dtw():
@@ -64,4 +64,4 @@ def plot_rel_err_per_rel_dtw():
     pass
 
 #plot_rel_err(matrix_aca_t, ranks=range(5,16,5), repeat=3)
-plot_rel_err(vector_aca_t, ranks=range(5, 31, 5), repeat=3, max_approx=10)
+plot_rel_err(vector_aca_t, ranks=range(5, 51, 5), repeat=3, max_approx=1)

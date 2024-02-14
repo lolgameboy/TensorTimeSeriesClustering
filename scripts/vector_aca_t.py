@@ -28,6 +28,9 @@ def vector_aca_t(tensor, max_rank, max_approx):
         # calculate residu of tube of delta
         tube_residu = tensor[:,i,j] - decomp.tube_at(i, j)
 
+        if abs(tube_residu[k]) < 0.000001:
+            raise Exception("zero as delta")
+
         # add term
         decomp.add(1/tube_residu[k], tube_residu, aca_decomp)
 
