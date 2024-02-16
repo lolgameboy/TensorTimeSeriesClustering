@@ -13,7 +13,7 @@ def vector_aca_t(tensor, max_rank, max_approx):
 
     # initialise decomposition
     K, N, M = tensor.shape
-    decomp = TensorDecomp(K, N, M, [])
+    decomp = TensorDecomp(K, N, M, max_rank)
 
     # sample some elements of tensor
     S = sample_tensor(tensor, 3)

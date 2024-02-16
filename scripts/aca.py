@@ -5,7 +5,7 @@ from structs import *
 
 def aca(matrix, max_rank, start_sample=None):
     n, m = matrix.shape
-    decomp = MatrixDecomp(n, m, [])
+    decomp = MatrixDecomp(n, m, max_rank)
 
     if start_sample is None:
         (i, j), _ = max_abs_samples(sample_matrix(matrix, 10))

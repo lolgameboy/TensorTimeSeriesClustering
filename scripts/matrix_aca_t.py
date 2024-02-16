@@ -12,7 +12,7 @@ def matrix_aca_t(tensor, max_rank):
 
     # initialise decomposition
     K, N, M = tensor.shape
-    decomp = TensorDecomp(K, N, M, [])
+    decomp = TensorDecomp(K, N, M, max_rank)
 
     # sample some elements of tensor
     (k, _, _), _ = max_abs_samples(sample_tensor(tensor, 3))

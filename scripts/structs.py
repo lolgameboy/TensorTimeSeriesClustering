@@ -1,16 +1,6 @@
 import numpy as np
 
 
-class MatrixDecompTerm:
-    def __init__(self, delta, column, row):
-        self.delta = delta
-        self.column = np.array(column)
-        self.row = np.array(row)
-
-    def element_at(self, i, j):
-        """Returns the element at position (i,j) of the matrix this term represents"""
-        return self.row[j] * self.column[i] * self.delta
-
 class TensorDecompTerm:
     def __init__(self, delta, tube, matrix_decomp):
         self.delta = delta
@@ -41,48 +31,50 @@ class TensorDecompTermMatrix:
 
 
 class MatrixDecomp:
-    def __init__(self, n, m, term_list):
+    def __init__(self, n, m, max_rank):
         self.n = n
         self.m = m
-        self.term_list = term_list
-    
+        self.max_rank = max_rank
+        self.factors = np.zeros(max_rank)
+        self.rows = np.zeros((max_rank, m))
+        self.columns = np.zeros((max_rank, n))
+        self.rank = 0
+
     def add(self, factor, column, row):
-        term = MatrixDecompTerm(factor, column, row)
-        self.term_list.append(term)
+        self.factors[self.rank] = factor
+        self.columns[self.rank, :] = column
+        self.rows[self.rank, :] = row
+        self.rank += 1
 
     def element_at(self, i, j):
         e = 0
-        terms = self.term_list
-        for k in range(len(terms)):
-            e += terms[k].element_at(i, j)
+        for k in range(self.rank):
+            e += self.rows[k, j] * self.columns[k, i] * self.factors[k]
         return e
 
     def row_at(self, i):
-        row = []
+        row = np.zeros(self.m)
         for j in range(self.m):
-            row.append(self.element_at(i, j))
-        return np.array(row)
+            row[j] = self.element_at(i, j)
+        return row
 
     def column_at(self, j):
-        column = []
+        column = np.zeros(self.n)
         for i in range(self.n):
-            column.append(self.element_at(i, j))
+            column[i] = self.element_at(i, j)
         return np.array(column)
 
     def full_matrix(self):
-        terms = self.term_list
-        matrix = np.zeros((self.n, self.m))
-        for k in range(len(terms)):
-            matrix += np.outer(terms[k].column, terms[k].row) * terms[k].delta
+        matrix = np.transpose(self.columns) * np.diag(self.factors) * self.rows
         return matrix
 
 
 class TensorDecomp:
-    def __init__(self, K, N, M, term_list):
+    def __init__(self, K, N, M, max_rank):
         self.K = K
         self.N = N
         self.M = M
-        self.term_list = term_list
+        self.term_list = []
 
     def add(self, delta, tube, matrix_decomp):
         term = TensorDecompTerm(delta, tube, matrix_decomp)
@@ -100,28 +92,28 @@ class TensorDecomp:
         return e
 
     def tube_at(self, i, j):
-        tube = []
+        tube = np.zeros(self.K)
         for k in range(self.K):
-            tube.append(self.element_at(k, i, j))
-        return np.array(tube)
+            tube[k] = self.element_at(k, i, j)
+        return tube
 
     def row_at(self, k, i):
-        row = []
+        row = np.zeros(self.M)
         for j in range(self.M):
-            row.append(self.element_at(k, i, j))
-        return np.array(row)
+            row[j] = self.element_at(k, i, j)
+        return row
 
     def column_at(self, k, j):
-        column = []
+        column = np.zeros(self.N)
         for i in range(self.N):
-            column.append(self.element_at(k, i, j))
-        return np.array(column)
+            column[i] = self.element_at(k, i, j)
+        return column
 
     def matrix_at(self, k):
-        matrix = []
+        matrix = np.zeros((self.N, self.M))
         for i in range(self.N):
-            matrix.append(self.row_at(k, i))
-        return np.array(matrix)
+            matrix[i] = self.row_at(k, i)
+        return matrix
 
     def full_tensor(self):
         terms = self.term_list
@@ -129,4 +121,3 @@ class TensorDecomp:
         for t in range(len(terms)):
             tensor += terms[t].full_tensor()
         return tensor
-
