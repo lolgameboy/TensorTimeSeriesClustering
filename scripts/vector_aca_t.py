@@ -15,7 +15,7 @@ def vector_aca_t(tensor, max_rank, max_approx):
     decomp = TensorDecomp(K, N, M, max_rank)
 
     # sample some elements of tensor
-    S = sample_tensor(tensor, 3)
+    S = sample_tensor(tensor, 10)
     (k, i, j), _ = max_abs_samples(S)
 
     for rank in range(max_rank):
@@ -37,12 +37,12 @@ def vector_aca_t(tensor, max_rank, max_approx):
         k = argmax_vector(abs(tube_residu), k)
 
         # update samples
-        #update_samples_tensor_ineff(S, tensor, decomp)
-        #p, v = max_abs_samples(S)
+        update_samples_tensor(S, tensor, decomp)
+        p, v = max_abs_samples(S)
 
         # if max sample is bigger -> choose sample instead
-        #if v > decomp.element_at(k, i, j):
-        #    (k, i, j) = p
+        if v > decomp.element_at(k, i, j):
+            (k, i, j) = p
 
     # return decomposition
     return decomp

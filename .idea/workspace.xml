@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a6a8cfa8-3e5b-4b15-b99b-93db7b84fa0e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/aca.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/aca.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/matrix_aca_t.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/matrix_aca_t.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/structs.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/structs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figures/rel_fout_matrix_aca_t(rpt5)(rnk50).png" beforeDir="false" afterPath="$PROJECT_DIR$/figures/rel_fout_matrix_aca_t(rpt5)(rnk50).png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/figures/rel_fout_vector_aca_t(1)(rpt5)(rnk50).png" beforeDir="false" afterPath="$PROJECT_DIR$/figures/rel_fout_vector_aca_t(1)(rpt5)(rnk50).png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/figs.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/figs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/helpers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/vector_aca_t.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/vector_aca_t.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
