@@ -38,35 +38,25 @@ class MatrixDecomp:
         self.factors = np.zeros(max_rank)
         self.rows = np.zeros((max_rank, m))
         self.columns = np.zeros((max_rank, n))
-        self.rank = 0
+        self.matrix = np.zeros((n, m))
 
     def add(self, factor, column, row):
         self.factors[self.rank] = factor
         self.columns[self.rank, :] = column
         self.rows[self.rank, :] = row
-        self.rank += 1
+        self.matrix += np.outer(column, row) * factor
 
     def element_at(self, i, j):
-        e = 0
-        for k in range(self.rank):
-            e += self.rows[k, j] * self.columns[k, i] * self.factors[k]
-        return e
+        return self.matrix[i, j]
 
     def row_at(self, i):
-        row = np.zeros(self.m)
-        for j in range(self.m):
-            row[j] = self.element_at(i, j)
-        return row
+        return self.matrix[i, :]
 
     def column_at(self, j):
-        column = np.zeros(self.n)
-        for i in range(self.n):
-            column[i] = self.element_at(i, j)
-        return np.array(column)
+        return self.matrix[:, j]
 
     def full_matrix(self):
-        matrix = np.transpose(self.columns) * np.diag(self.factors) * self.rows
-        return matrix
+        return self.matrix
 
 
 class TensorDecomp:
