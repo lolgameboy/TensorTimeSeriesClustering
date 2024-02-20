@@ -1,7 +1,6 @@
 import numpy as np
 from helpers import *
 from structs import *
-from aca import *
 
 def vector_aca_t(tensor, max_rank, max_approx):
     '''
@@ -47,3 +46,47 @@ def vector_aca_t(tensor, max_rank, max_approx):
 
     # return decomposition
     return decomp
+
+
+def aca(matrix, max_rank, start_sample=None):
+    '''
+    An adapted ACA-algorithm specifically for vector_aca_t().
+
+    where decomp is the matrix decomposition achieved with standard ACA
+    and   (i,j)  is the position of the greatest element (in absolute value) of all
+                 used ('calculated') elements in the given matrix (NOT the decomposition) 
+    :return: (decomp, (i,j)) 
+    '''
+
+    n, m = matrix.shape
+    decomp = MatrixDecomp(n, m, max_rank)
+
+    if start_sample is None:
+        (i, j), _ = max_abs_samples(sample_matrix(matrix, 10))
+    else:
+        i, j = start_sample
+    
+    I, J = (i, j)
+
+    for rank in range(max_rank):
+        column_residu = matrix[:, j] - decomp.column_at(j)
+
+        i = argmax_vector(abs(column_residu))
+
+        row_residu = matrix[i, :] - decomp.row_at(i)
+
+        factor = 1 / (row_residu[j])
+        decomp.add(factor, column_residu, row_residu)
+
+        j = argmax_vector(abs(row_residu), j)
+
+        # row i and column j used so we update the max elem
+        j2 = argmax_vector(abs(matrix[i, :]))
+        i2 = argmax_vector(abs(matrix[:, j]))
+
+        if abs(matrix[i, j2]) > abs(matrix[I, J]):
+            I, J = i, j2
+        if abs(matrix[i2, j]) > abs(matrix[I, J]):
+            I, J = i2, j
+
+    return decomp, (I, J)
