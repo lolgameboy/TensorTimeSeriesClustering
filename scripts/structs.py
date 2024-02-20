@@ -39,12 +39,14 @@ class MatrixDecomp:
         self.rows = np.zeros((max_rank, m))
         self.columns = np.zeros((max_rank, n))
         self.matrix = np.zeros((n, m))
+        self.rank = 0
 
     def add(self, factor, column, row):
         self.factors[self.rank] = factor
         self.columns[self.rank, :] = column
         self.rows[self.rank, :] = row
         self.matrix += np.outer(column, row) * factor
+        self.rank += 1
 
     def element_at(self, i, j):
         return self.matrix[i, j]
@@ -65,49 +67,32 @@ class TensorDecomp:
         self.N = N
         self.M = M
         self.term_list = []
+        self.tensor = np.zeros((K, N, M))
 
     def add(self, delta, tube, matrix_decomp):
         term = TensorDecompTerm(delta, tube, matrix_decomp)
         self.term_list.append(term)
+        self.tensor += term.full_tensor()
 
     def add_matrix_term(self, delta, tube, matrix):
         term = TensorDecompTermMatrix(delta, tube, matrix)
         self.term_list.append(term)
+        self.tensor += term.full_tensor()
 
     def element_at(self, k, i, j):
-        e = 0
-        terms = self.term_list
-        for t in range(len(terms)):
-            e += terms[t].element_at(k, i, j)
-        return e
+        return self.tensor[k, i, j]
 
     def tube_at(self, i, j):
-        tube = np.zeros(self.K)
-        for k in range(self.K):
-            tube[k] = self.element_at(k, i, j)
-        return tube
+        return self.tensor[:, i, j]
 
     def row_at(self, k, i):
-        row = np.zeros(self.M)
-        for j in range(self.M):
-            row[j] = self.element_at(k, i, j)
-        return row
+        return self.tensor[k, i, :]
 
     def column_at(self, k, j):
-        column = np.zeros(self.N)
-        for i in range(self.N):
-            column[i] = self.element_at(k, i, j)
-        return column
+        return self.tensor[k, :, j]
 
     def matrix_at(self, k):
-        matrix = np.zeros((self.N, self.M))
-        for i in range(self.N):
-            matrix[i] = self.row_at(k, i)
-        return matrix
+        return self.tensor[k, :, :]
 
     def full_tensor(self):
-        terms = self.term_list
-        tensor = np.zeros((self.K, self.N, self.M))
-        for t in range(len(terms)):
-            tensor += terms[t].full_tensor()
-        return tensor
+        return self.tensor

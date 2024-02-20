@@ -64,4 +64,4 @@ def plot_rel_err_per_rel_dtw():
     pass
 
 #plot_rel_err(matrix_aca_t, ranks=range(5,16,5), repeat=3)
-plot_rel_err(vector_aca_t, ranks=range(5, 21, 5), repeat=3, max_approx=1)
+plot_rel_err(vector_aca_t, ranks=range(5, 51, 5), repeat=3, max_approx=1)
