@@ -38,8 +38,8 @@ print(test_matrix)
 print(test_matrix2)
 
 for i in range(1, 6):
-    decomp, _ = aca(test_matrix, i)
-    decomp2, _ = aca(test_matrix2, i)
+    decomp = aca(test_matrix, i)
+    decomp2 = aca(test_matrix2, i)
 
     print(f'rank {i} with norm = {np.linalg.norm(test_matrix - decomp.full_matrix()) / np.linalg.norm(test_matrix)}')
     print(test_matrix - decomp.full_matrix())
