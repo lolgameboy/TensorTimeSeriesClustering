@@ -6,6 +6,17 @@ from data_class import DAL
 dataset = "amie-kinect-data.hdf"
 
 
+def get_people_exercises_sensors():
+    dal = DAL(dataset)
+    overview = dal.overview()
+    people = overview["person"]
+    exercises = overview["exercise"]
+    skeletons = overview["df_key"]
+    skeleton0 = dal.get(skeletons[0])
+    sensors = skeleton0.columns
+    return people, exercises, sensors
+
+
 def build_tensor(max_slices=None, slice_size=None):
     '''
     builds distance tensor from the dataset located at ./data/dataset (should be the AMIE dataset)
@@ -83,8 +94,8 @@ def save_overview():
     df = pd.DataFrame(overview)
     df.to_csv("overview.csv")
 
-#tensor = build_tensor(3, 4)
-#print(tensor)
+# tensor = build_tensor(3, 4)
+# print(tensor)
 #print(tensor[0,:,:])
 #print(tensor)
 #same_tensor_test(20, 5)
