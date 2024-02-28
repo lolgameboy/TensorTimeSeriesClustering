@@ -16,6 +16,9 @@ class TensorDecompTerm:
         a = self.matrix_decomp.full_matrix()
         return self.delta * np.outer(self.tube, a).reshape(self.tube.size, a.shape[0], a.shape[1])
 
+    def get_row_vectors(self):
+        return self.matrix_decomp.rows
+
 
 class TensorDecompTermMatrix:
     def __init__(self, delta, tube, matrix):
@@ -28,6 +31,9 @@ class TensorDecompTermMatrix:
 
     def full_tensor(self):
         return self.delta * np.outer(self.tube, self.matrix).reshape(self.tube.size, self.matrix.shape[0], self.matrix.shape[1])
+
+    def get_row_vectors(self):
+        return self.matrix
 
 
 class MatrixDecomp:
@@ -96,3 +102,9 @@ class TensorDecomp:
 
     def full_tensor(self):
         return self.tensor
+
+    def get_row_vectors(self):
+        row_vectors = self.term_list[0].get_row_vectors()
+        for i in range(1, len(self.term_list)):
+            row_vectors = np.concatenate((row_vectors, self.term_list[i].get_row_vectors()))
+        return row_vectors
