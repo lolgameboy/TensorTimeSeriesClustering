@@ -5,23 +5,32 @@ from helpers import k_means
 from tensorly.decomposition import parafac
 import tensor as t
 from sklearn.metrics.cluster import adjusted_rand_score
+from vector_aca_t import *
 
 
-def cluster(n_clusters, feature_vect):
+def cluster(method, n_clusters, direction, max_rank, max_approx=0):
     tensor = np.load("saved_tensors/full_tensor.npy")
-
-    cp_facts = get_CP_decomposition(tensor, 50)[1]
-    if feature_vect == 'rows':
-        to_cluster = cp_facts[2]
+    if method == "cp":
+        cp_facts = get_CP_decomposition(tensor, max_rank)[1]
+        feature_vectors = cp_facts[2]
+    elif method == "vector_aca_t":
+        decomp = vector_aca_t(tensor, max_rank, max_approx)
+        feature_vectors = decomp.get_row_vectors().transpose()
     else:
-        to_cluster = cp_facts[0]
+        return
+
+    # if direction == 'rows':
+    #     feature_vectors = cp_facts[2]
+    # else:
+    #     feature_vectors = cp_facts[0]
 
     people, exercises, sensors = t.get_people_exercises_sensors()
 
-    centers, labels = k_means(to_cluster, n_clusters=n_clusters)
+    centers, labels = k_means(feature_vectors, n_clusters=n_clusters)
     data = {"Person": people, "Exercise": exercises, "Cluster": labels}
     dataframe = pd.DataFrame(data=data)
-    return dataframe
+
+    return dataframe, feature_vectors
 
 
 def get_CP_decomposition(tensor, max_rank):
@@ -31,4 +40,10 @@ def get_CP_decomposition(tensor, max_rank):
 
 np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
-print(cluster(3, 'rows'))
+# print(cluster(3, 'rows'))
+
+# tensor = np.load("saved_tensors/full_tensor.npy")
+# cp_facts = get_CP_decomposition(tensor, 10)[1]
+# feature_vectors = cp_facts[2]
+# print(feature_vectors.shape)
+# print(feature_vectors)
