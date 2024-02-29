@@ -17,42 +17,51 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
 
     if len(colors) != len(max_approxs):
         raise Exception("Amount of colors not right.")
-        
-    matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
-    print(f'Plotting relative error {max_approxs}{matrix_str} with ranks {list(ranks)} averaged out of {repeat} samples.')
 
-    tensor = np.load("saved_tensors/full_tensor.npy")
-    t_norm = np.linalg.norm(tensor)
+    try:
+        data = np.load(f'saved_fig_data/data(rel_err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+        print('data loaded from a save file')
+    except:
+        matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
+        print(f'Calculating relative error {max_approxs}{matrix_str} with ranks {list(ranks)} averaged out of {repeat} samples.')
 
-    x_pos = len(ranks)
-    data = []
+        tensor = np.load("saved_tensors/full_tensor.npy")
+        t_norm = np.linalg.norm(tensor)
 
-    # calculate data for every type
-    for max_approx in max_approxs:
-        data_for_type = []
-        print(f'type {max_approx}')
-        for rank in ranks:
-            rel_errs = []
-            for i in range(repeat):
-                dp = vector_aca_t(tensor, rank, max_approx)
-                rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
-                print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
-            data_for_type.append(rel_errs)
-            print('', end='\r')
-        data.append(data_for_type)
+        x_pos = len(ranks)
+        data = []
 
-    # calculate data for matrix_aca_t if needed
+        # calculate data for every type
+        for max_approx in max_approxs:
+            data_for_type = []
+            print(f'type {max_approx}')
+            for rank in ranks:
+                rel_errs = []
+                for i in range(repeat):
+                    dp = vector_aca_t(tensor, rank, max_approx)
+                    rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
+                    print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
+                data_for_type.append(rel_errs)
+                print('', end='\r')
+            data.append(data_for_type)
+
+        # calculate data for matrix_aca_t if needed
+        if add_matrix_aca_t:
+            data_for_type = []
+            print(f'maxtrix_aca_t')
+            for rank in ranks:
+                rel_errs = []
+                for i in range(repeat):
+                    dp = matrix_aca_t(tensor, rank)
+                    rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
+                    print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
+                data_for_type.append(rel_errs)
+            data.append(data_for_type)
+
+        np.save(f'saved_fig_data/data(rel_err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy', data)
+        print('data saved to a save file')
+
     if add_matrix_aca_t:
-        data_for_type = []
-        print(f'maxtrix_aca_t')
-        for rank in ranks:
-            rel_errs = []
-            for i in range(repeat):
-                dp = matrix_aca_t(tensor, rank)
-                rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
-                print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
-            data_for_type.append(rel_errs)
-        data.append(data_for_type)
         colors.append('orange')
 
     fig, ax = plt.subplots()
@@ -143,40 +152,49 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
 
     if len(colors) != len(max_approxs):
         raise Exception("Amount of colors not right.")
+
+    try:
+        data = np.load(f'saved_fig_data/data(rel_dtw,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
+        print('data loaded from a save file')
+    except:   
+        matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
+        print(f'Calculating relative DTW operations on types {max_approxs}{matrix_str} at ranks {list(ranks)}')
+
+        tensor = np.load("saved_tensors/full_tensor.npy")
+        t_norm = np.linalg.norm(tensor)
+
+        x_pos = len(ranks)
+        data = []
+        total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2
+
+        # calculate data for every approximation
+        for max_approx in max_approxs:
+            print(f'type {max_approx}')
+
+            percentages = []
+            for rank in ranks:
+                print(f'rank {rank}', end='\r')
+                dp, count = vector_aca_t(tensor, rank, max_approx, count=True)
+                percentages.append(100*count/total)
+
+            data.append(percentages)
         
-    matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
-    print(f'Plotting relative DTW operations on types {max_approxs}{matrix_str} at ranks {list(ranks)}')
+        # calculate data for matrix_aca_t
+        if add_matrix_aca_t:
+            print('matrix_aca_t')
 
-    tensor = np.load("saved_tensors/full_tensor.npy")
-    t_norm = np.linalg.norm(tensor)
+            percentages = []
+            for rank in ranks:
+                print(f'rank {rank}', end='\r')
+                dp, count = matrix_aca_t(tensor, rank, count=True)
+                percentages.append(count/total)
+            
+            data.append(percentages)
 
-    x_pos = len(ranks)
-    data = []
-    total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2
-
-    # calculate data for every approximation
-    for max_approx in max_approxs:
-        print(f'type {max_approx}')
-
-        percentages = []
-        for rank in ranks:
-            print(f'rank {rank}', end='\r')
-            dp, count = vector_aca_t(tensor, rank, max_approx, count=True)
-            percentages.append(100*count/total)
-
-        data.append(percentages)
-    
-    # calculate data for matrix_aca_t
+        np.save(f'saved_fig_data/data(rel_dtw,{ranks},{max_approxs},{add_matrix_aca_t}).npy', data)
+        print('data saved to a save file')
+            
     if add_matrix_aca_t:
-        print('matrix_aca_t')
-
-        percentages = []
-        for rank in ranks:
-            print(f'rank {rank}', end='\r')
-            dp, count = matrix_aca_t(tensor, rank, count=True)
-            percentages.append(count/total)
-        
-        data.append(percentages)
         colors.append('orange')
 
     fig, ax = plt.subplots()
@@ -242,55 +260,64 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
     if len(colors) != len(max_approxs):
         raise Exception("Amount of colors not right.")
-        
-    matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
-    print(f'Plotting relative error {max_approxs}{matrix_str} versus DTW operations at ranks {list(ranks)} averaged out of {repeat} samples.')
 
-    tensor = np.load("saved_tensors/full_tensor.npy")
-    t_norm = np.linalg.norm(tensor)
+    try:
+        data = np.load(f'saved_fig_data/data(rel_err_dtw,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+        print('data loaded from a save file')
+    except:
+        matrix_str = ' (matrix_aca_t included)' if add_matrix_aca_t else ''
+        print(f'Calculating relative error {max_approxs}{matrix_str} versus DTW operations at ranks {list(ranks)} averaged out of {repeat} samples.')
 
-    x_pos = len(ranks)
-    err_data = []
-    count_data = []
-    total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2 # symmetrical slices halves the DTW operations
+        tensor = np.load("saved_tensors/full_tensor.npy")
+        t_norm = np.linalg.norm(tensor)
 
-    # calculate data for every type
-    for max_approx in max_approxs:
-        print(f'type {max_approx}')
+        x_pos = len(ranks)
+        err_data = []
+        count_data = []
+        total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2 # symmetrical slices halves the DTW operations
 
-        data_for_type = []
-        percentages = []
-        for rank in ranks:
-            rel_errs = []
-            count = 0
-            for i in range(repeat):
-                dp, count = vector_aca_t(tensor, rank, max_approx, count=True)
-                rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
-                print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
-            data_for_type.append(rel_errs)
-            percentages.append(100*count/total) # count is determenistic -> only last repeat count is used
-            print('', end='\r')
-        
-        err_data.append(data_for_type)
-        count_data.append(percentages)
+        # calculate data for every type
+        for max_approx in max_approxs:
+            print(f'type {max_approx}')
 
-    # calculate data for matrix_aca_t if needed
+            data_for_type = []
+            percentages = []
+            for rank in ranks:
+                rel_errs = []
+                count = 0
+                for i in range(repeat):
+                    dp, count = vector_aca_t(tensor, rank, max_approx, count=True)
+                    rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
+                    print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
+                data_for_type.append(rel_errs)
+                percentages.append(100*count/total) # count is determenistic -> only last repeat count is used
+                print('', end='\r')
+            
+            err_data.append(data_for_type)
+            count_data.append(percentages)
+
+        # calculate data for matrix_aca_t if needed
+        if add_matrix_aca_t:
+            print(f'maxtrix_aca_t')
+
+            data_for_type = []
+            percentages = []
+            for rank in ranks:
+                rel_errs = []
+                count = 0
+                for i in range(repeat):
+                    dp, count = matrix_aca_t(tensor, rank, count=True)
+                    rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
+                    print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
+                data_for_type.append(rel_errs)
+                percentages.append(100*count/total)
+            err_data.append(data_for_type)
+            count_data.append(percentages)
+
+        np.save(f'saved_fig_data/data(rel_err_dtw,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy', data)
+        print('data saved to a save file')
+
     if add_matrix_aca_t:
-        print(f'maxtrix_aca_t')
-
-        data_for_type = []
-        percentages = []
-        for rank in ranks:
-            rel_errs = []
-            count = 0
-            for i in range(repeat):
-                dp, count = matrix_aca_t(tensor, rank, count=True)
-                rel_errs.append(np.linalg.norm(tensor-dp.full_tensor())/t_norm)
-                print(f'rank {rank}' + '<' + i*'#' + (repeat-i)*'-' + '>', end='\r')
-            data_for_type.append(rel_errs)
-            percentages.append(100*count/total)
-        err_data.append(data_for_type)
-        count_data.append(percentages)
         colors.append('orange')
 
     fig, ax = plt.subplots()
@@ -347,9 +374,9 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg')
     plt.show()
 
-colors = ['lightgreen', 'pink', 'firebrick', 'sienna', 'violet', 'indigo', 'teal']
+colors = ['firebrick', 'greenyellow', 'indigo', 'teal', 'violet']
 #plot_rel_err(range(5, 11, 5), [1, 3, 5], ['lightblue', 'lightgreen', 'pink'], repeat=5, ptype='box')
-plot_rel_err(range(5, 21, 5), [1, 3, 5, 10, 20], ['lightgreen', 'pink', 'lightblue', 'violet', 'teal'], add_matrix_aca_t=False, repeat=3, ptype='bar')
+plot_rel_err(range(5, 31, 10), [1, 3, 5], ['firebrick', 'red', 'green'], add_matrix_aca_t=True, repeat=3, ptype='bar')
 #plot_rel_dtw(range(5, 21, 5), [1, 3, 10], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False)
 #plot_rel_err_vs_rel_dtw(range(5, 26, 5), [1, 3, 5], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
 #plot_rel_err_vs_rel_dtw(range(5, 16, 5), [1], ['lightgreen'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
