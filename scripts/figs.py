@@ -121,11 +121,14 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     ax.spines['right'].set_color((.8,.8,.8))
     ax.spines['top'].set_color((.8,.8,.8))
 
-        # sharpness of plot
+        # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
 
+    fig.patch.set_facecolor('#DEEBF7')
+    ax.set_facecolor('#DEEBF7')
+
     # save and show plot
-    plt.savefig(f'figures/rel_fout{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg')
+    plt.savefig(f'figures/rel_fout{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
 def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line'):
@@ -219,7 +222,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     ax.spines['right'].set_color((.8,.8,.8))
     ax.spines['top'].set_color((.8,.8,.8))
 
-        # sharpness of plot
+        # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
@@ -337,16 +340,16 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     ax.spines['right'].set_color((.8,.8,.8))
     ax.spines['top'].set_color((.8,.8,.8))
 
-        # sharpness of plot
+        # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
     plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg')
     plt.show()
 
-
+colors = ['lightgreen', 'pink', 'firebrick', 'sienna', 'violet', 'indigo', 'teal']
 #plot_rel_err(range(5, 11, 5), [1, 3, 5], ['lightblue', 'lightgreen', 'pink'], repeat=5, ptype='box')
-plot_rel_err(range(5, 21, 5), [1,3], ['lightgreen','pink'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
+plot_rel_err(range(5, 21, 5), [1, 3, 5, 10, 20], ['lightgreen', 'pink', 'lightblue', 'violet', 'teal'], add_matrix_aca_t=False, repeat=3, ptype='bar')
 #plot_rel_dtw(range(5, 21, 5), [1, 3, 10], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False)
 #plot_rel_err_vs_rel_dtw(range(5, 26, 5), [1, 3, 5], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
 #plot_rel_err_vs_rel_dtw(range(5, 16, 5), [1], ['lightgreen'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
