@@ -87,6 +87,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     if ptype == 'bar':
         n = len(data)
         width = 3
+        fig.set_size_inches((n-1)*3 + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
             stdevs = list(map(stat.stdev, d))
@@ -310,7 +311,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
 colors = ['firebrick', 'greenyellow', 'indigo', 'teal', 'violet']
 #plot_rel_err(range(5, 11, 5), [1, 3, 5], ['lightblue', 'lightgreen', 'pink'], repeat=5, ptype='box')
-plot_rel_err(range(5, 31, 5), [1, 3, 5], ['firebrick', 'red', 'green'], add_matrix_aca_t=True, repeat=5, ptype='box')
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'indigo', 'teal'], add_matrix_aca_t=True, repeat=50, ptype='bar')
 #plot_rel_dtw(range(5, 21, 5), [1, 3, 10], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False)
 #plot_rel_err_vs_rel_dtw(range(5, 26, 5), [1, 3, 5], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
 #plot_rel_err_vs_rel_dtw(range(5, 16, 5), [1], ['lightgreen'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
