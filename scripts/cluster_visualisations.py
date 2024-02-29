@@ -18,12 +18,14 @@ def show_clusters(method, n_clusters, rank, approx):
         clusterXs[labels[i]].append(pcs[i, 0])
         clusterYs[labels[i]].append(pcs[i, 1])
 
-    colors = ["r", "g", "b", "c", "m", "y", "brown", "purple", "wheat", "aqua"]
+    colors = ["y", "r", "g", "brown", "b", "c", "m", "purple", "wheat", "aqua"]
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
     ax1.set_xlabel("Principal Component 1")
     ax1.set_ylabel("Principal Component 2")
     ax1.set_title("Clustering met " + method + " met rang " + str(rank))
+    fig.patch.set_facecolor('#DEEBF7')
+    ax1.set_facecolor('#DEEBF7')
     for i in range(n_clusters):
         ax1.scatter(clusterXs[i], clusterYs[i], c=colors[i])
     plt.show()
