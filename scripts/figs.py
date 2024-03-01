@@ -87,13 +87,13 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     if ptype == 'bar':
         n = len(data)
         width = 3
-        fig.set_size_inches((n-1)*3 + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
+        fig.set_size_inches(max(0, 2*(n-2)) + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
             stdevs = list(map(stat.stdev, d))
-            offset = (i - n/2 + 1/2)*width/n # offset from center of bar to the tick on x-axis
+            offset = (i - n/2 + 1/2)*width/min(2, n) # offset from center of bar to the tick on x-axis
             xs = list(map(lambda x: x + offset, ranks))
-            plt.bar(xs, avgs, width=width/n, yerr=stdevs, color=colors[i])
+            plt.bar(xs, avgs, width=width/min(2, n), yerr=stdevs, color=colors[i])
     elif ptype == 'box': #TODO Not working reliable
         for i, d in enumerate(data):
             bplot = plt.boxplot(list(d), positions=ranks, widths=3.2, patch_artist=True)
@@ -151,9 +151,6 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
 
         # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
-
-    fig.patch.set_facecolor('#DEEBF7')
-    ax.set_facecolor('#DEEBF7')
 
     # save and show plot
     plt.savefig(f'figures/rel_fout{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
@@ -228,7 +225,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
-    plt.savefig(f'figures/rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rnk{ranks[-1]}).svg')
+    plt.savefig(f'figures/rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
 def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='line'):
@@ -306,12 +303,10 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
-    plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg')
+    plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-colors = ['firebrick', 'greenyellow', 'indigo', 'teal', 'violet']
-#plot_rel_err(range(5, 11, 5), [1, 3, 5], ['lightblue', 'lightgreen', 'pink'], repeat=5, ptype='box')
-plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'indigo', 'teal'], add_matrix_aca_t=True, repeat=50, ptype='bar')
-#plot_rel_dtw(range(5, 21, 5), [1, 3, 10], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False)
-#plot_rel_err_vs_rel_dtw(range(5, 26, 5), [1, 3, 5], ['lightgreen', 'lightblue', 'pink'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
-#plot_rel_err_vs_rel_dtw(range(5, 16, 5), [1], ['lightgreen'], add_matrix_aca_t=False, repeat=3, ptype='scatter-line')
+colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
+
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+#plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='bar')
