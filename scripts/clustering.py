@@ -40,7 +40,8 @@ def get_CP_decomposition(tensor, max_rank):
 
 np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
-# print(cluster(3, 'rows'))
+frame, fvs = cluster("vector_aca_t", 7, 'rows', 25, 3)
+print(frame)
 
 # tensor = np.load("saved_tensors/full_tensor.npy")
 # cp_facts = get_CP_decomposition(tensor, 10)[1]
