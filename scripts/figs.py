@@ -13,7 +13,8 @@ def calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat=1):
     x_pos = len(ranks)
     err_data = []
     count_data = []
-    total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2 # symmetrical slices halves the DTW operations
+    total = tensor.shape[0] * tensor.shape[1] * tensor.shape[2] # less optimal total (not using the symmetry of slices and that the diagonals are 0)
+    # total = tensor.shape[0] * (tensor.shape[1] * tensor.shape[1] - tensor.shape[1])/2 # symmetrical slices halves the DTW operations
 
     # calculate data for every type
     for max_approx in max_approxs:
@@ -315,4 +316,4 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
 
 plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='line')
-#plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='bar')
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
