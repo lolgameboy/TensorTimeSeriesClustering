@@ -197,7 +197,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.xlabel('Rang')
     plt.xticks(ranks, fontsize=15)
 
-    plt.ylabel('Relatieve fout')
+    plt.ylabel('Relatieve % DTW operaties')
     plt.yticks(fontsize=15)
     plt.ylim(bottom=0)
     plt.grid(axis='y', alpha=0.7)
@@ -273,7 +273,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     # Styling of the plot
 
         # x and y axis
-    plt.xlabel('Rang')
+    plt.xlabel('Relatieve % DTW operaties')
     plt.xticks(count_data[-1], fontsize=15)
 
     plt.ylabel('Relatieve fout')
