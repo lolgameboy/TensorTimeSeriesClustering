@@ -121,9 +121,10 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
 
         # x and y axis
     plt.xlabel('Rang')
-    plt.xticks(ranks)
+    plt.xticks(ranks, fontsize=15)
 
     plt.ylabel('Relatieve fout')
+    plt.yticks(fontsize=15)
     plt.ylim(bottom=0)
     plt.grid(axis='y', alpha=0.7)
 
@@ -132,8 +133,9 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
 
     xlabel.set_style('italic')
     ylabel.set_style('italic')
-    xlabel.set_size(10)
-    ylabel.set_size(10)
+    xlabel.set_size(18)
+    ylabel.set_size(18)
+    plt.subplots_adjust(bottom=0.14, left=0.075)
 
         # legend
     lgd = list(map(lambda p: f'type {p}', max_approxs))
@@ -142,7 +144,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     plt.legend(lgd)
 
         # title
-    plt.title(f'Relatieve fout van ACA-T methodes per rang')
+    plt.title(f'Relatieve fout van ACA-T methodes per rang', fontsize=20)
     ax.title.set_weight('bold')
 
         # right and top spines to gray
@@ -193,9 +195,10 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
 
         # x and y axis
     plt.xlabel('Rang')
-    plt.xticks(ranks)
+    plt.xticks(ranks, fontsize=15)
 
-    plt.ylabel('Relatieve % DTW operaties')
+    plt.ylabel('Relatieve fout')
+    plt.yticks(fontsize=15)
     plt.ylim(bottom=0)
     plt.grid(axis='y', alpha=0.7)
 
@@ -204,8 +207,9 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
 
     xlabel.set_style('italic')
     ylabel.set_style('italic')
-    xlabel.set_size(10)
-    ylabel.set_size(10)
+    xlabel.set_size(18)
+    ylabel.set_size(18)
+    plt.subplots_adjust(bottom=0.14, left=0.075)
 
         # legend
     lgd = list(map(lambda p: f'type {p}', max_approxs))
@@ -214,7 +218,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.legend(lgd)
 
         # title
-    plt.title(f'Relatieve % DTW operaties van ACA-T methodes per rang')
+    plt.title(f'Relatieve % DTW operaties van ACA-T methodes per rang', fontsize=20)
     ax.title.set_weight('bold')
 
         # right and top spines to gray
@@ -269,10 +273,11 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     # Styling of the plot
 
         # x and y axis
-    plt.xlabel('% Relatieve DTW operaties')
-    plt.xticks(list(map(lambda x: round(x, 3), count_data[-1])))
+    plt.xlabel('Rang')
+    plt.xticks(count_data[-1], fontsize=15)
 
     plt.ylabel('Relatieve fout')
+    plt.yticks(fontsize=15)
     plt.ylim(bottom=0)
     plt.grid(axis='y', alpha=0.7)
 
@@ -281,8 +286,9 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
     xlabel.set_style('italic')
     ylabel.set_style('italic')
-    xlabel.set_size(10)
-    ylabel.set_size(10)
+    xlabel.set_size(18)
+    ylabel.set_size(18)
+    plt.subplots_adjust(bottom=0.14, left=0.1, top=0.85)
 
         # legend
     lgd = list(map(lambda p: f'type {p}', max_approxs))
@@ -291,7 +297,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     plt.legend(lgd)
 
         # title
-    plt.title('Relatieve fout van ACA-T methodes versus hun relatieve % DTW operaties')
+    plt.title('Relatieve fout van ACA-T methodes\n versus hun relatieve % DTW operaties', fontsize=20)
     ax.title.set_weight('bold')
     fig.set_size_inches(1.4*6.4, 4.8)
 
@@ -308,5 +314,5 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
 colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
 
-plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='line')
 #plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='bar')

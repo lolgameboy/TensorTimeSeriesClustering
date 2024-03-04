@@ -26,20 +26,29 @@ def show_clusters(method, n_clusters, rank, approx):
 
     xlabel = ax1.xaxis.get_label()
     ylabel = ax1.yaxis.get_label()
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
 
     xlabel.set_style('italic')
     ylabel.set_style('italic')
-    xlabel.set_size(10)
-    ylabel.set_size(10)
+    xlabel.set_size(18)
+    ylabel.set_size(18)
+    plt.subplots_adjust(bottom=0.2, left=0.2, top=0.85)
 
-    title = "Clustering in " + str(n_clusters) + " clusters met " + method + " met rang " + str(rank)
-    ax1.set_title(title)
+    if method == "matrix_aca_t":
+        methodStr = "Matrix ACA-T"
+    else:
+        methodStr = "Vector ACA-T type " + str(approx)  
+        
+    title = str(n_clusters) + " Clusters van " + methodStr + "\nrang " + str(rank)
+    name = str(n_clusters) + " Clusters " + methodStr + " rang " + str(rank)
+    ax1.set_title(title, fontsize=20)
     ax1.title.set_weight('bold')
     ax1.spines['right'].set_color((.8, .8, .8))
     ax1.spines['top'].set_color((.8, .8, .8))
     for i in range(n_clusters):
         ax1.scatter(clusterXs[i], clusterYs[i], c=colors[i])
-    plt.savefig("figures/" + title + ".svg", transparent=True, bbox_inches=0)
+    plt.savefig("figures/" + name + ".svg", transparent=True, bbox_inches=0)
 
 
 def show_table(rows, method, n_clusters, rank, approx):
