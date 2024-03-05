@@ -121,7 +121,8 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     # Styling of the plot
 
         # x and y axis
-    plt.xlabel('Rang')
+    #plt.xlabel('Rang')
+    plt.xlabel('Aantal termen')
     plt.xticks(ranks, fontsize=15)
 
     plt.ylabel('Relatieve fout')
@@ -145,7 +146,8 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     plt.legend(lgd)
 
         # title
-    plt.title(f'Relatieve fout van ACA-T methodes per rang', fontsize=20)
+    #plt.title(f'Relatieve fout van ACA-T methodes per rang', fontsize=20)
+    plt.title(f'Relatieve fout van ACA-T methodes per aantal termen', fontsize=20)
     ax.title.set_weight('bold')
 
         # right and top spines to gray
@@ -195,7 +197,8 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     # Styling of the plot
 
         # x and y axis
-    plt.xlabel('Rang')
+    #plt.xlabel('Rang')
+    plt.xlabel('Aantal termen')
     plt.xticks(ranks, fontsize=15)
 
     plt.ylabel('Relatieve % DTW operaties')
@@ -219,7 +222,8 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.legend(lgd)
 
         # title
-    plt.title(f'Relatieve % DTW operaties van ACA-T methodes per rang', fontsize=20)
+    #plt.title(f'Relatieve % DTW operaties van ACA-T methodes per rang', fontsize=20)
+    plt.title(f'Relatieve % DTW operaties van ACA-T methodes per aantal termen', fontsize=20)
     ax.title.set_weight('bold')
 
         # right and top spines to gray
@@ -315,5 +319,5 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
 colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
 
-plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='line')
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
 #plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
