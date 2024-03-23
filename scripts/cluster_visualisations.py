@@ -1,4 +1,4 @@
-from clustering import *
+from clustering_helpers import *
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
@@ -66,6 +66,7 @@ def show_table(rows, method, n_clusters, rank, approx):
     plt.axis('off')
 
     plt.savefig("figures/table_clustering.svg", transparent=True, bbox_inches=0)
+
 
 show_clusters("vector_aca_t", 3, 25, 3)
 show_clusters("vector_aca_t", 7, 25, 3)

@@ -19,6 +19,12 @@ class TensorDecompTerm:
     def get_row_vectors(self):
         return self.matrix_decomp.rows
 
+    def get_column_vectors(self):
+        return self.matrix_decomp.columns
+
+    def get_tube_vector(self):
+        return self.tube
+
 
 class TensorDecompTermMatrix:
     def __init__(self, delta, tube, matrix):
@@ -108,3 +114,18 @@ class TensorDecomp:
         for i in range(1, len(self.term_list)):
             row_vectors = np.concatenate((row_vectors, self.term_list[i].get_row_vectors()))
         return row_vectors
+
+    def get_column_vectors(self):
+        column_vectors = self.term_list[0].get_column_vectors()
+        for i in range(1, len(self.term_list)):
+            column_vectors = np.concatenate((column_vectors, self.term_list[i].get_column_vectors()))
+        return column_vectors
+
+    def get_tube_vectors(self):
+        tube_vector = self.term_list[0].get_tube_vector()
+        tube_vectors = tube_vector.reshape((tube_vector.shape[0], 1)).transpose()
+        for i in range(1, len(self.term_list)):
+            tube_vector = self.term_list[i].get_tube_vector()
+            tube_vector = tube_vector.reshape((tube_vector.shape[0], 1)).transpose()
+            tube_vectors = np.concatenate((tube_vectors, tube_vector))
+        return tube_vectors
