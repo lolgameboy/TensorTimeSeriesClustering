@@ -95,7 +95,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
             offset = (i - n/2 + 1/2)*width/min(2, n) # offset from center of bar to the tick on x-axis
             xs = list(map(lambda x: x + offset, ranks))
             plt.bar(xs, avgs, width=width/min(2, n), yerr=stdevs, color=colors[i])
-    elif ptype == 'box': #TODO Not working reliable
+    elif ptype == 'box':
         for i, d in enumerate(data):
             bplot = plt.boxplot(list(d), positions=ranks, widths=3.2, patch_artist=True)
             for box in bplot['boxes']:
@@ -319,5 +319,5 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
 colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
 
-plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='box')
 #plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
