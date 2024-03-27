@@ -76,26 +76,9 @@ def build_tensor(max_slices=None, slice_size=None):
     
     return np.array(tensor)
 
-def same_tensor_test(amount_of_slices, sensors_per_slice):
-    path = "saved_tensors/full_tensor.npy"
-    big_boi = np.load(path)
-    myTensor = build_tensor(amount_of_slices, sensors_per_slice)
-    for k in range(amount_of_slices):
-        matrix = []
-        for i in range(sensors_per_slice):
-            row = []
-            for j in range(sensors_per_slice):
-                assert big_boi[k, i, j] == myTensor[k, i, j]
-    print("---Tensor Test Passed---")
 
 def save_overview():
     dal = DAL(dataset)
     overview = dal.overview()
     df = pd.DataFrame(overview)
     df.to_csv("overview.csv")
-
-# tensor = build_tensor(3, 4)
-# print(tensor)
-#print(tensor[0,:,:])
-#print(tensor)
-#same_tensor_test(20, 5)
