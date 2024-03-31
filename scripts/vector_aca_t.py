@@ -4,6 +4,7 @@ from structs import *
 
 def vector_aca_t(tensor, max_rank, max_approx, count=False):
     '''
+    Calculates the decomposition of Vector ACA-T type k (where k := max_approx)
     :param tensor: 3d numpyarray of full tensor to decompose
     :param max_rank: amount of terms to include in decomposition
     :param max_approx: amount of terms to approximate matrix in a single term with ACA
