@@ -1,6 +1,8 @@
 from clustering_helpers import *
 from sklearn.decomposition import PCA
+from sklearn.metrics.cluster import adjusted_rand_score
 import matplotlib.pyplot as plt
+import statistics
 
 
 def show_clusters(method, n_clusters, rank, approx):
@@ -38,8 +40,8 @@ def show_clusters(method, n_clusters, rank, approx):
     if method == "matrix_aca_t":
         methodStr = "Matrix ACA-T"
     else:
-        methodStr = "Vector ACA-T type " + str(approx)  
-        
+        methodStr = "Vector ACA-T type " + str(approx)
+
     title = str(n_clusters) + " Clusters van " + methodStr + "\nrang " + str(rank)
     name = str(n_clusters) + " Clusters " + methodStr + " rang " + str(rank)
     ax1.set_title(title, fontsize=20)
@@ -68,7 +70,86 @@ def show_table(rows, method, n_clusters, rank, approx):
     plt.savefig("figures/table_clustering.svg", transparent=True, bbox_inches=0)
 
 
-show_clusters("vector_aca_t", 3, 25, 3)
-show_clusters("vector_aca_t", 7, 25, 3)
+def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, sample_size, cp=True, bar=False, bar_width=5):
+    """
+    Compares clusters from cp and vector_aca_t using ari. Will compare vector_aca_t for every type in types.
+    Calculates ari-scores using the true labels and
+    plots the results in function of the amount of feature vectors.
+    :param types: a list of the types of vector_aca_t to use.
+    e.g. [1,3,7] will cluster and calculate the ari-scores for vector_aca_t
+    using 1 vector per term, 3 vectors per term and 7 vectors per term.
+    :param k_clusters: the amount of clusters.
+    :param max_feature_vectors: the maximum amount of feature vectors per cluster.
+    :param direction: the direction of the feature vectors. Options: 'rows', 'columns', and 'tubes'.
+    :param true_labels: the true labels of the clustering
+    """
+    if cp:
+        cp_scores = []
+        cp_fvs = []
+    vector_aca_scores_per_type = []
+    vector_aca_fvs_per_type = []
+    vector_aca_stdev_per_type = []
+    for i in range(0, len(types)):
+        vector_aca_scores_per_type.append([])
+        vector_aca_fvs_per_type.append([])
+        vector_aca_stdev_per_type.append([])
+    for i in range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors):
+        if cp:
+            labels = cluster("cp", k_clusters, direction, i)
+            ari = adjusted_rand_score(true_labels, labels)
+            cp_scores.append(ari)
+            cp_fvs.append(i)
+        for ty in range(len(types)):
+            aris = []
+            fvs = round(i / types[ty]) * types[ty]
+            for j in range(sample_size):
+                labels = cluster("vector_aca_t", k_clusters, direction, fvs, types[ty])
+                ari = adjusted_rand_score(true_labels, labels)
+                aris.append(ari)
+            vector_aca_scores_per_type[ty].append(statistics.median(aris))
+            vector_aca_fvs_per_type[ty].append(fvs)
+            vector_aca_stdev_per_type[ty].append(statistics.stdev(aris))
+    lgd = []
+    if not bar:
+        if cp:
+            plt.plot(cp_fvs, cp_scores, marker='.', markersize=10, markerfacecolor='white')
+            lgd.append("cp")
+        for i in range(0, len(types)):
+            plt.plot(vector_aca_fvs_per_type[i], vector_aca_scores_per_type[i], marker='.', markersize=10, markerfacecolor='white')
+            lgd.append("type " + str(types[i]))
+        plt.legend(lgd)
+        plt.ylabel("ARI score")
+        plt.xlabel("Aantal feature vectoren")
+        plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
+        ax = plt.gca()
+        ax.set_ylim([0, 1])
+
+        plt.show()
+    else:
+        if cp:
+            plt.bar(cp_fvs, cp_scores)
+            lgd.append("cp")
+        for i in range(0, len(types)):
+            offset = (i - len(types) / 2 + 1 / 2) * bar_width / min(2, len(types))
+            xs = list(map(lambda x: x + offset, vector_aca_fvs_per_type[i]))
+            plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, len(types)), yerr=vector_aca_stdev_per_type[i])
+            lgd.append("type " + str(types[i]))
+        plt.legend(lgd)
+        plt.ylabel("ARI score")
+        plt.xlabel("Aantal feature vectoren")
+        plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
+        ax = plt.gca()
+        ax.set_ylim([0, 1])
+
+        plt.show()
+
+
+ex = get_overview()["exercise"]
+et = get_overview()["execution_type"]
+tl = list(map(str, list(zip(ex, et))))
+cluster_ari([1,5,10], 12, 'rows', 300, 10, 400, tl, 10, False, True, 5)
+
+# show_clusters("vector_aca_t", 3, 25, 3)
+# show_clusters("vector_aca_t", 7, 25, 3)
 # show_clusters("cp", 3, 10, 3)
 # show_table(10,"vector_aca_t", 3, 10, 3)

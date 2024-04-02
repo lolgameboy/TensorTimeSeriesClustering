@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from helpers import k_means
+from sklearn.cluster import KMeans
 from tensorly.decomposition import parafac
 import tensor as t
 from sklearn.metrics.cluster import adjusted_rand_score
@@ -10,10 +10,10 @@ from scripts.data_class import DAL
 from vector_aca_t import *
 
 
-def cluster(method, n_clusters, direction, max_rank, max_approx=0):
+def cluster(method, n_clusters, direction, max_feature_vectors, max_approx=1):
     tensor = np.load("saved_tensors/full_tensor.npy")
     if method == "cp":
-        cp_facts = get_CP_decomposition(tensor, max_rank)[1]
+        cp_facts = get_CP_decomposition(tensor, max_feature_vectors)[1]
         if direction == 'rows':
             feature_vectors = cp_facts[2]
         elif direction == 'columns':
@@ -21,6 +21,7 @@ def cluster(method, n_clusters, direction, max_rank, max_approx=0):
         elif direction == 'tubes':
             feature_vectors = cp_facts[0]
     elif method == "vector_aca_t":
+        max_rank = max_feature_vectors // max_approx
         decomp = vector_aca_t(tensor, max_rank, max_approx)
         if direction == 'rows':
             feature_vectors = decomp.get_row_vectors().transpose()
@@ -31,16 +32,21 @@ def cluster(method, n_clusters, direction, max_rank, max_approx=0):
     else:
         return
 
-    people, exercises, sensors = t.get_people_exercises_sensors()
-
     centers, labels = k_means(feature_vectors, n_clusters=n_clusters)
+    return labels
+
+
+def cluster_table(method, n_clusters, direction, max_rank, max_approx=0):
+    labels = cluster(method, n_clusters, direction, max_rank, max_approx)
+
+    people, exercises, sensors = t.get_people_exercises_sensors()
     if direction == 'tubes':
         data = {"Sensor": sensors, "Cluster": labels}
     else:
         data = {"Person": people, "Exercise": exercises, "Cluster": labels}
     dataframe = pd.DataFrame(data=data)
 
-    return dataframe, feature_vectors
+    return dataframe
 
 
 def get_CP_decomposition(tensor, max_rank):
@@ -55,15 +61,20 @@ def get_overview():
     return df
 
 
+def k_means(vectors, n_clusters):
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init="auto").fit(vectors)
+    return kmeans.cluster_centers_, kmeans.labels_
+
+
 np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
 
 # print(get_overview())
 
-frame, fvs = cluster("vector_aca_t", 5, 'rows', 25, 3)
-print(frame)
-frame, fvs = cluster("cp", 5, 'rows', 25, 3)
-print(frame)
+# frame = cluster("vector_aca_t", 5, 'rows', 25, 3)
+# print(frame)
+# frame = cluster("cp", 5, 'rows', 25, 3)
+# print(frame)
 
 # tensor = np.load("saved_tensors/full_tensor.npy")
 # cp_facts = get_CP_decomposition(tensor, 10)[1]
