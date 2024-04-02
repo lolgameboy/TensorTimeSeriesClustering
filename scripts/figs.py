@@ -38,7 +38,7 @@ def calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat=1):
 
     # calculate data for matrix_aca_t if needed
     if add_matrix_aca_t:
-        print(f'maxtrix_aca_t')
+        print(f'matrix_aca_t')
 
         data_for_type = []
         percentages = []
@@ -87,14 +87,19 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
 
     if ptype == 'bar':
         n = len(data)
-        width = 3
-        fig.set_size_inches(max(0, 2*(n-2)) + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
+        if n == 1:
+            width = 4
+        elif n == 2:
+            width = 2.2
+        else:
+            width = 1.5
+        fig.set_size_inches(max(0, 2*(n-1)) + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
             stdevs = list(map(stat.stdev, d))
-            offset = (i - n/2 + 1/2)*width/min(2, n) # offset from center of bar to the tick on x-axis
+            offset = (i - n/2 + 1/2)*width # offset from center of bar to the tick on x-axis
             xs = list(map(lambda x: x + offset, ranks))
-            plt.bar(xs, avgs, width=width/min(2, n), yerr=stdevs, color=colors[i])
+            plt.bar(xs, avgs, width=width, yerr=stdevs, color=colors[i])
     elif ptype == 'box':
         for i, d in enumerate(data):
             bplot = plt.boxplot(list(d), positions=ranks, widths=3.2, patch_artist=True)
@@ -139,9 +144,12 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     plt.subplots_adjust(bottom=0.14, left=0.075)
 
         # legend
-    lgd = list(map(lambda p: f'type {p}', max_approxs))
+    if len(max_approxs) == 1 and max_approxs[0] == 1:
+        lgd = ['Vector ACA-T']
+    else:
+        lgd = list(map(lambda p: f'Type {p}', max_approxs))
     if add_matrix_aca_t:
-        lgd.append('matrix ACA-T')
+        lgd.append('Matrix ACA-T')
     plt.legend(lgd)
 
         # title
@@ -213,9 +221,12 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.subplots_adjust(bottom=0.14, left=0.075)
 
         # legend
-    lgd = list(map(lambda p: f'type {p}', max_approxs))
+    if len(max_approxs) == 1 and max_approxs[0] == 1:
+        lgd = ['Vector ACA-T']
+    else:
+        lgd = list(map(lambda p: f'Type {p}', max_approxs))
     if add_matrix_aca_t:
-        lgd.append('matrix ACA-T')
+        lgd.append('Matrix ACA-T')
     plt.legend(lgd)
 
         # title
@@ -275,7 +286,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
         # x and y axis
     plt.xlabel('Relatieve % DTW operaties')
-    plt.xticks(count_data[-1], fontsize=15)
+    plt.xticks(list(map(lambda x: round(x, 1), count_data[-1])), fontsize=15)
 
     plt.ylabel('Relatieve fout')
     plt.yticks(fontsize=15)
@@ -292,9 +303,12 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     plt.subplots_adjust(bottom=0.14, left=0.1, top=0.85)
 
         # legend
-    lgd = list(map(lambda p: f'type {p}', max_approxs))
+    if len(max_approxs) == 1 and max_approxs[0] == 1:
+        lgd = ['Vector ACA-T']
+    else:
+        lgd = list(map(lambda p: f'Type {p}', max_approxs))
     if add_matrix_aca_t:
-        lgd.append('matrix ACA-T')
+        lgd.append('Matrix ACA-T')
     plt.legend(lgd)
 
         # title
@@ -315,5 +329,6 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
 
 colors = ['firebrick', 'indigo', 'teal', 'greenyellow', 'violet']
 
-plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+#plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
 #plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
+plot_rel_err(range(5,51,5), [1], ['firebrick'], add_matrix_aca_t=True)
