@@ -92,18 +92,24 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     fig, ax = plt.subplots()
 
     if ptype == 'bar':
-        if len(ranks) < 2:
-            raise Exception("At least 2 ranks needed for a bar plot.")
         n = len(data)
+        m = len(ranks)
+        if m < 2:
+            raise Exception("At least 2 ranks needed for a bar plot.")
 
          # width is based on highest rank and inter rank distance (assumes uniform inter-rank distance: e.g. [5, 10, 15, 20] and NOT [5, 9, 17, 20])
         delta = ranks[-1] - ranks[-2]
         total = ranks[-1]
-        alpha = 10 * delta/total
-        width = (delta - alpha)
+        if n == 1:
+            width = 0.75*delta/n
+        elif n == 2:
+            width = 0.85*delta/n
+        else:
+            width = 0.9*delta/n
+        print(width)
 
-        # fig size is based on amount of bars (n)
-        fig.set_size_inches(n + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
+        # fig size is based on amount of bars (n) and amount of datapoint per bar (m)
+        fig.set_size_inches(1.2*n + m/5 + 6.4, 4.8, forward=True)
 
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
@@ -355,9 +361,12 @@ colors = ['firebrick', 'indigo', 'greenyellow', 'violet', 'teal', 'indigo']
 #plot_rel_err(range(5, 41, 5), [3], ['greenyellow'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 31, 3), [5], ['violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 101, 10), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
+#plot_rel_err(range(2, 15, 2), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
+#plot_rel_err(range(2, 30, 1), [1,2], ['firebrick', 'indigo'], add_matrix_aca_t=False, repeat=2)
 
 
-plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(2, 15, 2), [1, 3, 5, 8, 10], ['firebrick', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=20)
-#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+#plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3)
 #plot_rel_err(range(5,51,5), [1], ['firebrick'], add_matrix_aca_t=True)
