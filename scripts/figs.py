@@ -60,7 +60,7 @@ def calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat=1):
 
     return err_data, count_data
 
-def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='bar'):
+def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='bar', recompute=False):
     '''
     Plot relative error for different ranks of decomposition for vector_aca_t
     :param ranks: different ranks to plot
@@ -69,6 +69,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param repeat: sample size to average from for a given rank
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
@@ -76,11 +77,14 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     if repeat < 2:
         raise Exception("Repeat needs to be 2 or higher to calculate standard deviations.")
 
-    try:
-        data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
-        print('data loaded from files')
-    except:
+    if recompute:
         data, _ = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+            print('data loaded from files')
+        except:
+            data, _ = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
 
     if add_matrix_aca_t:
         colors.append('orange')
@@ -96,10 +100,10 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
         delta = ranks[-1] - ranks[-2]
         total = ranks[-1]
         alpha = 10 * delta/total
-        width = (delta - alpha)/n
+        width = (delta - alpha)
 
         # fig size is based on amount of bars (n)
-        fig.set_size_inches(3 + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
+        fig.set_size_inches(n + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
 
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
@@ -174,7 +178,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     plt.savefig(f'figures/rel_fout{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line'):
+def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line', recompute=False):
     '''
     Plot relative DTW operations for different ranks of decomposition for vector_aca_t
     :param ranks: different ranks to plot
@@ -182,16 +186,20 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     :param colors: colors of the different types (ordered), if matrix_aca_t is included, its color is always orange
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
         raise Exception("Amount of colors not right.")
 
-    try:
-        data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
-        print('data loaded from a save file')
-    except:   
-        _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t)
+    if recompute:
+        _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
+            print('data loaded from a save file')
+        except:   
+            _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t)
             
     if add_matrix_aca_t:
         colors.append('orange')
@@ -251,7 +259,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.savefig(f'figures/rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='line'):
+def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='line', recompute=False):
     '''
     Plot relative error in function of relative DTW operations on different ranks of the decomposition.
     :param ranks: different ranks to plot the relative DTW operations for
@@ -260,6 +268,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param repeat: sample size to average from for a given rank
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
@@ -267,12 +276,15 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     if repeat < 2:
         raise Exception("Repeat needs to be 2 or higher to calculate standard deviations.")
 
-    try:
-        err_data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
-        count_data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
-        print('data loaded from files')
-    except:
+    if recompute:
         err_data, count_data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            err_data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+            count_data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
+            print('data loaded from files')
+        except:
+            err_data, count_data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
 
     if add_matrix_aca_t:
         colors.append('orange')
