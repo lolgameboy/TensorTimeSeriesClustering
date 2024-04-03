@@ -46,19 +46,19 @@ def cluster_table(method, n_clusters, direction, max_rank, max_approx=0):
 def get_CP_factors(direction, max_rank, no_compute=False):
     try:  # Try loading data
         if direction == 'rows':
-            factors = np.load("saved_fig_data/CP_rows_feature_vectors.npy")[0:max_rank]
+            factors = np.load("saved_fig_data/CP_rows_feature_vectors.npy")
         elif direction == 'columns':
-            factors = np.load("saved_fig_data/CP_columns_feature_vectors.npy")[0:max_rank]
+            factors = np.load("saved_fig_data/CP_columns_feature_vectors.npy")
         elif direction == 'tubes':
-            factors = np.load("saved_fig_data/CP_tubes_feature_vectors.npy")[0:max_rank]
-        if len(factors) < max_rank:  # Check if there are insufficient factors, if so, compute the extra factors
+            factors = np.load("saved_fig_data/CP_tubes_feature_vectors.npy")
+        if factors.shape[1] < max_rank:  # Check if there are insufficient factors, if so, compute the extra factors
             if no_compute:
                 return
             print("Computing factors!")
             compute_CP_factors(max_rank)
             return get_CP_factors(direction, max_rank, True)  # no_compute=True to prevent infinite loops
         else:
-            return factors
+            return factors[:, 0:max_rank]
     except OSError:  # If this fails, data does not exist. Compute data.
         if no_compute:
             return
@@ -94,8 +94,7 @@ np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
 
 
-# compute_CP_factors(30)
-print(get_CP_factors('rows', 40))
+print(get_CP_factors('rows', 50))
 
 # print(get_overview())
 
