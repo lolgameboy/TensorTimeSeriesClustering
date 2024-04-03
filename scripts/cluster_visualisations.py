@@ -3,6 +3,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics.cluster import adjusted_rand_score
 import matplotlib.pyplot as plt
 import statistics
+import tensor as t
 
 
 def show_clusters(method, n_clusters, rank, approx):
@@ -53,9 +54,14 @@ def show_clusters(method, n_clusters, rank, approx):
     plt.savefig("figures/" + name + ".svg", transparent=True, bbox_inches=0)
 
 
-def show_table(rows, method, n_clusters, rank, approx):
-    table, fvs = cluster(method, n_clusters, 'rows', rank, approx)
-
+def show_table(direction, rows, method, n_clusters, rank, approx):
+    labels = cluster(method, n_clusters, direction, rank, approx)
+    people, exercises, sensors = t.get_people_exercises_sensors()
+    if direction == 'rows':
+        data = {"Person": people, "Exercise": exercises, "Cluster": labels}
+    elif direction == 'tubes':
+        data = {"Sensor": sensors, "Cluster": labels}
+    table = pd.DataFrame(data=data)
     plt.figure()
 
     # table
@@ -66,8 +72,8 @@ def show_table(rows, method, n_clusters, rank, approx):
         cell_text.append(table.iloc[row])
     plt.table(cellText=cell_text, colLabels=table.columns, loc='center')
     plt.axis('off')
-
-    plt.savefig("figures/table_clustering.svg", transparent=True, bbox_inches=0)
+    name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_rank{rank}.svg"
+    plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
 
 
 def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, sample_size, cp=True, bar=False, bar_width=5):
@@ -148,10 +154,11 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.show()
 
 
-ex = get_overview()["exercise"]
-et = get_overview()["execution_type"]
-tl = list(map(str, list(zip(ex, et))))
-cluster_ari([1, 5, 10], 12, 'rows', 100, 10, 150, tl, 10, True, True, 4)
+# ex = get_overview()["exercise"]
+# et = get_overview()["execution_type"]
+# tl = list(map(str, list(zip(ex, et))))
+# tl = get_overview()["exercise"]
+# cluster_ari([1, 5, 10], 3, 'rows', 100, 10, 150, tl, 10, True, True, 4)
 
 # show_clusters("vector_aca_t", 3, 25, 3)
 # show_clusters("vector_aca_t", 7, 25, 3)

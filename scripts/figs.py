@@ -367,6 +367,6 @@ colors = ['firebrick', 'indigo', 'greenyellow', 'violet', 'teal', 'indigo']
 
 #plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(2, 15, 2), [1, 3, 5, 8, 10], ['firebrick', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=20)
-plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+# plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
 #plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3)
 #plot_rel_err(range(5,51,5), [1], ['firebrick'], add_matrix_aca_t=True)

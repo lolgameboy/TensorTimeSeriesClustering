@@ -6,12 +6,12 @@ from tensorly.decomposition import parafac
 import tensor as t
 from sklearn.metrics.cluster import adjusted_rand_score
 
-from scripts.data_class import DAL
+from data_class import DAL
 from vector_aca_t import *
 
 
 def cluster(method, n_clusters, direction, max_feature_vectors, max_approx=1):
-    tensor = np.load("saved_tensors/full_tensor.npy")
+    tensor = np.load("../saved_tensors/full_tensor.npy")
     if method == "cp":
         feature_vectors = get_CP_factors(direction, max_feature_vectors)
     elif method == "vector_aca_t":
@@ -46,11 +46,11 @@ def cluster_table(method, n_clusters, direction, max_rank, max_approx=0):
 def get_CP_factors(direction, max_rank, no_compute=False):
     try:  # Try loading data
         if direction == 'rows':
-            factors = np.load("saved_fig_data/CP_rows_feature_vectors.npy")
+            factors = np.load("../saved_fig_data/CP_rows_feature_vectors.npy")
         elif direction == 'columns':
-            factors = np.load("saved_fig_data/CP_columns_feature_vectors.npy")
+            factors = np.load("../saved_fig_data/CP_columns_feature_vectors.npy")
         elif direction == 'tubes':
-            factors = np.load("saved_fig_data/CP_tubes_feature_vectors.npy")
+            factors = np.load("../saved_fig_data/CP_tubes_feature_vectors.npy")
         if factors.shape[1] < max_rank:  # Check if there are insufficient factors, if so, compute the extra factors
             if no_compute:
                 return
@@ -68,18 +68,18 @@ def get_CP_factors(direction, max_rank, no_compute=False):
 
 
 def compute_CP_factors(max_rank):
-    tensor = np.load("saved_tensors/full_tensor.npy")
+    tensor = np.load("../saved_tensors/full_tensor.npy")
     factors = parafac(tensor, rank=max_rank, normalize_factors=False)[1]
     rows_feature_vectors = factors[2]
     columns_feature_vectors = factors[1]
     tubes_feature_vectors = factors[0]
-    np.save("saved_fig_data/CP_rows_feature_vectors", rows_feature_vectors)
-    np.save("saved_fig_data/CP_columns_feature_vectors", columns_feature_vectors)
-    np.save("saved_fig_data/CP_tubes_feature_vectors", tubes_feature_vectors)
+    np.save("../saved_fig_data/CP_rows_feature_vectors", rows_feature_vectors)
+    np.save("../saved_fig_data/CP_columns_feature_vectors", columns_feature_vectors)
+    np.save("../saved_fig_data/CP_tubes_feature_vectors", tubes_feature_vectors)
 
 
 def get_overview():
-    dal = DAL("amie-kinect-data.hdf")
+    dal = DAL("../../data/amie-kinect-data.hdf")
     overview = dal.overview()
     df = pd.DataFrame(overview)
     return df
@@ -92,9 +92,6 @@ def k_means(vectors, n_clusters):
 
 np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
-
-
-print(get_CP_factors('rows', 50))
 
 # print(get_overview())
 
