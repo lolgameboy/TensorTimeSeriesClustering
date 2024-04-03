@@ -8,6 +8,7 @@ def vector_aca_t(tensor, max_rank, max_approx, count=False):
     :param tensor: 3d numpyarray of full tensor to decompose
     :param max_rank: amount of terms to include in decomposition
     :param max_approx: amount of terms to approximate matrix in a single term with ACA
+    :param count: should the amount of DTW operation be counted?
     :return: adaptable vector ACA-T decomposition of given tensor and the amount of DTW operations (theoretically) performed if count is true.
     '''
 
