@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from sklearn.cluster import KMeans
+
 
 
 
@@ -97,8 +97,3 @@ def argmax_vector(vector, ignore_index=-1):
             max_pos = i
 
     return max_pos
-
-
-def k_means(vectors, n_clusters):
-    kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init="auto").fit(vectors)
-    return kmeans.cluster_centers_, kmeans.labels_
