@@ -13,13 +13,7 @@ from vector_aca_t import *
 def cluster(method, n_clusters, direction, max_feature_vectors, max_approx=1):
     tensor = np.load("saved_tensors/full_tensor.npy")
     if method == "cp":
-        cp_facts = get_CP_decomposition(tensor, max_feature_vectors)[1]
-        if direction == 'rows':
-            feature_vectors = cp_facts[2]
-        elif direction == 'columns':
-            feature_vectors = cp_facts[1]
-        elif direction == 'tubes':
-            feature_vectors = cp_facts[0]
+        feature_vectors = get_CP_factors(direction, max_feature_vectors)
     elif method == "vector_aca_t":
         max_rank = max_feature_vectors // max_approx
         decomp = vector_aca_t(tensor, max_rank, max_approx)
@@ -49,9 +43,39 @@ def cluster_table(method, n_clusters, direction, max_rank, max_approx=0):
     return dataframe
 
 
-def get_CP_decomposition(tensor, max_rank):
-    factors = parafac(tensor, rank=max_rank, normalize_factors=False)
-    return factors
+def get_CP_factors(direction, max_rank, no_compute=False):
+    try:  # Try loading data
+        if direction == 'rows':
+            factors = np.load("saved_fig_data/CP_rows_feature_vectors.npy")[0:max_rank]
+        elif direction == 'columns':
+            factors = np.load("saved_fig_data/CP_columns_feature_vectors.npy")[0:max_rank]
+        elif direction == 'tubes':
+            factors = np.load("saved_fig_data/CP_tubes_feature_vectors.npy")[0:max_rank]
+        if len(factors) < max_rank:  # Check if there are insufficient factors, if so, compute the extra factors
+            if no_compute:
+                return
+            print("Computing factors!")
+            compute_CP_factors(max_rank)
+            return get_CP_factors(direction, max_rank, True)  # no_compute=True to prevent infinite loops
+        else:
+            return factors
+    except OSError:  # If this fails, data does not exist. Compute data.
+        if no_compute:
+            return
+        print("Computing factors!")
+        compute_CP_factors(max_rank)
+        return get_CP_factors(direction, max_rank, True)  # no_compute=True to prevent infinite loops
+
+
+def compute_CP_factors(max_rank):
+    tensor = np.load("saved_tensors/full_tensor.npy")
+    factors = parafac(tensor, rank=max_rank, normalize_factors=False)[1]
+    rows_feature_vectors = factors[2]
+    columns_feature_vectors = factors[1]
+    tubes_feature_vectors = factors[0]
+    np.save("saved_fig_data/CP_rows_feature_vectors", rows_feature_vectors)
+    np.save("saved_fig_data/CP_columns_feature_vectors", columns_feature_vectors)
+    np.save("saved_fig_data/CP_tubes_feature_vectors", tubes_feature_vectors)
 
 
 def get_overview():
@@ -68,6 +92,10 @@ def k_means(vectors, n_clusters):
 
 np.set_printoptions(threshold=np.inf)
 pd.set_option("display.max_rows", 1000)
+
+
+# compute_CP_factors(30)
+print(get_CP_factors('rows', 40))
 
 # print(get_overview())
 

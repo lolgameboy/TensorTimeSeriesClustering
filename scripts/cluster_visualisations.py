@@ -126,18 +126,22 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
 
         plt.show()
     else:
+        n = len(types)
         if cp:
-            plt.bar(cp_fvs, cp_scores)
+            n = 1 + len(types)
+            offset = (len(types) - n / 2 + 1 / 2) * bar_width / min(2, n)
+            xs = list(map(lambda x: x + offset, cp_fvs))
+            plt.bar(xs, cp_scores, width=bar_width / min(2, n))
             lgd.append("cp")
         for i in range(0, len(types)):
-            offset = (i - len(types) / 2 + 1 / 2) * bar_width / min(2, len(types))
+            offset = (i - n / 2 + 1 / 2) * bar_width / min(2, n)
             xs = list(map(lambda x: x + offset, vector_aca_fvs_per_type[i]))
-            plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, len(types)), yerr=vector_aca_stdev_per_type[i])
+            plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, n), yerr=vector_aca_stdev_per_type[i])
             lgd.append("type " + str(types[i]))
         plt.legend(lgd)
         plt.ylabel("ARI score")
         plt.xlabel("Aantal feature vectoren")
-        plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
+        plt.title("Clustering in " + str(k_clusters) + " clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
 
@@ -147,7 +151,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
 ex = get_overview()["exercise"]
 et = get_overview()["execution_type"]
 tl = list(map(str, list(zip(ex, et))))
-cluster_ari([1,5,10], 12, 'rows', 300, 10, 400, tl, 10, False, True, 5)
+cluster_ari([1, 5, 10], 12, 'rows', 100, 10, 150, tl, 10, True, True, 4)
 
 # show_clusters("vector_aca_t", 3, 25, 3)
 # show_clusters("vector_aca_t", 7, 25, 3)
