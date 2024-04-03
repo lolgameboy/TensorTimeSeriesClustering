@@ -60,7 +60,7 @@ def calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat=1):
 
     return err_data, count_data
 
-def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='bar'):
+def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='bar', recompute=False):
     '''
     Plot relative error for different ranks of decomposition for vector_aca_t
     :param ranks: different ranks to plot
@@ -69,6 +69,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param repeat: sample size to average from for a given rank
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
@@ -76,11 +77,14 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     if repeat < 2:
         raise Exception("Repeat needs to be 2 or higher to calculate standard deviations.")
 
-    try:
-        data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
-        print('data loaded from files')
-    except:
+    if recompute:
         data, _ = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+            print('data loaded from files')
+        except:
+            data, _ = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
 
     if add_matrix_aca_t:
         colors.append('orange')
@@ -88,18 +92,24 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     fig, ax = plt.subplots()
 
     if ptype == 'bar':
-        if len(ranks) < 2:
-            raise Exception("At least 2 ranks needed for a bar plot.")
         n = len(data)
+        m = len(ranks)
+        if m < 2:
+            raise Exception("At least 2 ranks needed for a bar plot.")
 
          # width is based on highest rank and inter rank distance (assumes uniform inter-rank distance: e.g. [5, 10, 15, 20] and NOT [5, 9, 17, 20])
         delta = ranks[-1] - ranks[-2]
         total = ranks[-1]
-        alpha = 10 * delta/total
-        width = (delta - alpha)/n
+        if n == 1:
+            width = 0.75*delta/n
+        elif n == 2:
+            width = 0.85*delta/n
+        else:
+            width = 0.9*delta/n
+        print(width)
 
-        # fig size is based on amount of bars (n)
-        fig.set_size_inches(3 + 6.4, 4.8, forward=True) # many bars (large n) needs wider plot
+        # fig size is based on amount of bars (n) and amount of datapoint per bar (m)
+        fig.set_size_inches(1.2*n + m/5 + 6.4, 4.8, forward=True)
 
         for i, d in enumerate(data):
             avgs = list(map(stat.mean, d))
@@ -174,7 +184,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
     plt.savefig(f'figures/rel_fout{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line'):
+def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line', recompute=False):
     '''
     Plot relative DTW operations for different ranks of decomposition for vector_aca_t
     :param ranks: different ranks to plot
@@ -182,16 +192,20 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     :param colors: colors of the different types (ordered), if matrix_aca_t is included, its color is always orange
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
         raise Exception("Amount of colors not right.")
 
-    try:
-        data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
-        print('data loaded from a save file')
-    except:   
-        _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t)
+    if recompute:
+        _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
+            print('data loaded from a save file')
+        except:   
+            _, data = calculate_data(ranks, max_approxs, add_matrix_aca_t)
             
     if add_matrix_aca_t:
         colors.append('orange')
@@ -251,7 +265,7 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     plt.savefig(f'figures/rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='line'):
+def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='line', recompute=False):
     '''
     Plot relative error in function of relative DTW operations on different ranks of the decomposition.
     :param ranks: different ranks to plot the relative DTW operations for
@@ -260,6 +274,7 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     :param add_matrix_aca_t: include matrix_aca_t in the plot?
     :param repeat: sample size to average from for a given rank
     :param ptype: type of graph to plot
+    :param recompute: should the data be recomputed from scratch even if it might be saved?
     '''
 
     if len(colors) != len(max_approxs):
@@ -267,12 +282,15 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     if repeat < 2:
         raise Exception("Repeat needs to be 2 or higher to calculate standard deviations.")
 
-    try:
-        err_data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
-        count_data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
-        print('data loaded from files')
-    except:
+    if recompute:
         err_data, count_data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
+    else:
+        try:
+            err_data = np.load(f'saved_fig_data/data(err,{ranks},{max_approxs},{add_matrix_aca_t},{repeat}).npy')
+            count_data = np.load(f'saved_fig_data/data(count,{ranks},{max_approxs},{add_matrix_aca_t}).npy')
+            print('data loaded from files')
+        except:
+            err_data, count_data = calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat)
 
     if add_matrix_aca_t:
         colors.append('orange')
@@ -343,9 +361,12 @@ colors = ['firebrick', 'indigo', 'greenyellow', 'violet', 'teal', 'indigo']
 #plot_rel_err(range(5, 41, 5), [3], ['greenyellow'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 31, 3), [5], ['violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 101, 10), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
+#plot_rel_err(range(2, 15, 2), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
+#plot_rel_err(range(2, 30, 1), [1,2], ['firebrick', 'indigo'], add_matrix_aca_t=False, repeat=2)
 
 
-plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(2, 15, 2), [1, 3, 5, 8, 10], ['firebrick', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=20)
-#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3, ptype='line')
+plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+#plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3)
 #plot_rel_err(range(5,51,5), [1], ['firebrick'], add_matrix_aca_t=True)

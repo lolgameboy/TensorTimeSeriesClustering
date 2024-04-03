@@ -7,6 +7,7 @@ def matrix_aca_t(tensor, max_rank, count=False):
     '''
     :param tensor: 3d numpyarray of full tensor to decompose
     :param max_rank: amount of terms to include in decomposition
+    :param count: should the amount of DTW operation be counted?
     :return: matrix ACA-T decomposition of given tensor and the amount of DTW operations (theoretically) performed if count is true.
     '''
 
