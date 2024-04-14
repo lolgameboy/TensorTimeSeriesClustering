@@ -129,7 +129,8 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
-
+        name = f"ari_clustering_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_lineplot.svg"
+        plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
     else:
         n = len(types)
@@ -150,7 +151,8 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.title("Clustering in " + str(k_clusters) + " clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
-
+        name = f"ari_clustering_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_barplot.svg"
+        plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
 
 
