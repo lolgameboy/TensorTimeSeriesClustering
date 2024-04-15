@@ -355,18 +355,32 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     plt.show()
 
 # type     1            2         3              5         8       10/20
-colors = ['firebrick', 'indigo', 'greenyellow', 'violet', 'teal', 'indigo']
+colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo']
 
+# Plateaus
+#plot_rel_err(range(5, 51, 5), [1], ['firebrick'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 51, 5), [2], ['indigo'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 41, 5), [3], ['greenyellow'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 31, 3), [5], ['violet'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(5, 31, 3), [8], ['teal'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(2, 26, 2), [15], ['indigo'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(2, 26, 2), [20], ['indigo'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(2, 26, 2), [30], ['indigo'], add_matrix_aca_t=False, repeat=50)
+
+
+# Multiple types
+#plot_rel_err(range(5, 51, 10), [1, 3, 8, 15], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
+plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
+
+
+
+# Extra/Other plots that the data has been saved for
 #plot_rel_err(range(5, 101, 10), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
 #plot_rel_err(range(2, 15, 2), [5], ['violet'], add_matrix_aca_t=False, repeat=2)
 #plot_rel_err(range(2, 30, 1), [1,2], ['firebrick', 'indigo'], add_matrix_aca_t=False, repeat=2)
-
-
 #plot_rel_err(range(2, 15, 2), [1, 2, 3, 5], ['firebrick', 'indigo', 'greenyellow', 'violet'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(2, 15, 2), [1, 3, 5, 8, 10], ['firebrick', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=20)
-# plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
+#plot_rel_err(range(5, 51, 10), [1, 3, 8, 20], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
 #plot_rel_err(range(5, 51, 10), [1, 8], ['firebrick', 'teal'], add_matrix_aca_t=True, repeat=3)
 #plot_rel_err(range(5,51,5), [1], ['firebrick'], add_matrix_aca_t=True)
