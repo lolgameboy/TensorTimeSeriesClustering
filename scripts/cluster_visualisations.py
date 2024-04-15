@@ -6,6 +6,7 @@ import statistics
 import tensor as t
 
 
+
 def show_clusters(method, n_clusters, rank, approx):
     df, fvs = cluster(method, n_clusters, 'rows', rank, approx)
     labels = df["Cluster"].to_list()
@@ -75,7 +76,6 @@ def show_table(direction, rows, method, n_clusters, n_fvs, approx):
     name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_rank{rank}.svg"
     plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
 
-
 def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, sample_size, cp=True, bar=False, bar_width=5):
     """
     Compares clusters from cp and vector_aca_t using ari. Will compare vector_aca_t for every type in types.
@@ -89,6 +89,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
     :param direction: the direction of the feature vectors. Options: 'rows', 'columns', and 'tubes'.
     :param true_labels: the true labels of the clustering
     """
+
     if cp:
         cp_scores = []
         cp_fvs = []
@@ -107,21 +108,21 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
             cp_fvs.append(i)
         for ty in range(len(types)):
             aris = []
-            fvs = round(i / types[ty]) * types[ty]
             for j in range(sample_size):
-                labels = cluster("vector_aca_t", k_clusters, direction, fvs, types[ty])
+                labels = cluster("vector_aca_t", k_clusters, direction, i, types[ty])
                 ari = adjusted_rand_score(true_labels, labels)
                 aris.append(ari)
             vector_aca_scores_per_type[ty].append(statistics.mean(aris))
-            vector_aca_fvs_per_type[ty].append(fvs)
+            vector_aca_fvs_per_type[ty].append(i)
             vector_aca_stdev_per_type[ty].append(statistics.stdev(aris))
     lgd = []
+    colors = {1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}
     if not bar:
         if cp:
             plt.plot(cp_fvs, cp_scores, marker='.', markersize=10, markerfacecolor='white')
             lgd.append("cp")
         for i in range(0, len(types)):
-            plt.plot(vector_aca_fvs_per_type[i], vector_aca_scores_per_type[i], marker='.', markersize=10, markerfacecolor='white')
+            plt.plot(vector_aca_fvs_per_type[i], vector_aca_scores_per_type[i], color=colors[types[i]], marker='.', markersize=10, markerfacecolor='white')
             lgd.append("type " + str(types[i]))
         plt.legend(lgd)
         plt.ylabel("ARI score")
@@ -143,7 +144,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         for i in range(0, len(types)):
             offset = (i - n / 2 + 1 / 2) * bar_width / min(2, n)
             xs = list(map(lambda x: x + offset, vector_aca_fvs_per_type[i]))
-            plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, n), yerr=vector_aca_stdev_per_type[i])
+            plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, n), color=colors[types[i]], yerr=vector_aca_stdev_per_type[i])
             lgd.append("type " + str(types[i]))
         plt.legend(lgd)
         plt.ylabel("ARI score")

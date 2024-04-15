@@ -15,7 +15,7 @@ def cluster(method, n_clusters, direction, max_feature_vectors, max_approx=1):
     if method == "cp":
         feature_vectors = get_CP_factors(direction, max_feature_vectors)
     elif method == "vector_aca_t":
-        max_rank = max_feature_vectors // max_approx
+        max_rank = (max_feature_vectors // max_approx) + 1
         decomp = vector_aca_t(tensor, max_rank, max_approx)
         if direction == 'rows':
             feature_vectors = decomp.get_row_vectors().transpose()
@@ -23,6 +23,7 @@ def cluster(method, n_clusters, direction, max_feature_vectors, max_approx=1):
             feature_vectors = decomp.get_column_vectors().transpose()
         elif direction == 'tubes':
             feature_vectors = decomp.get_tube_vectors().transpose()
+        feature_vectors = feature_vectors[:,0:max_feature_vectors]
     else:
         return
 
