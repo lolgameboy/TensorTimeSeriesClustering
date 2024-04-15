@@ -54,8 +54,8 @@ def show_clusters(method, n_clusters, rank, approx):
     plt.savefig("figures/" + name + ".svg", transparent=True, bbox_inches=0)
 
 
-def show_table(direction, rows, method, n_clusters, rank, approx):
-    labels = cluster(method, n_clusters, direction, rank, approx)
+def show_table(direction, rows, method, n_clusters, n_fvs, approx):
+    labels = cluster(method, n_clusters, direction, n_fvs, approx)
     people, exercises, sensors = t.get_people_exercises_sensors()
     if direction == 'rows':
         data = {"Person": people, "Exercise": exercises, "Cluster": labels}
@@ -112,7 +112,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
                 labels = cluster("vector_aca_t", k_clusters, direction, fvs, types[ty])
                 ari = adjusted_rand_score(true_labels, labels)
                 aris.append(ari)
-            vector_aca_scores_per_type[ty].append(statistics.median(aris))
+            vector_aca_scores_per_type[ty].append(statistics.mean(aris))
             vector_aca_fvs_per_type[ty].append(fvs)
             vector_aca_stdev_per_type[ty].append(statistics.stdev(aris))
     lgd = []
@@ -129,7 +129,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
-        name = f"ari_clustering_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_lineplot.svg"
+        name = f"ari_clustering_{direction}_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_lineplot.svg"
         plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
     else:
@@ -151,7 +151,8 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.title("Clustering in " + str(k_clusters) + " clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
-        name = f"ari_clustering_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_barplot.svg"
+        plt.xticks(range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors))
+        name = f"ari_clustering_{direction}_{k_clusters}_types_{types}_cp_{cp}_fv_{min_feature_vectors}_to_{max_feature_vectors}_barplot.svg"
         plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
 
