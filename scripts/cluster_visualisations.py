@@ -76,7 +76,8 @@ def show_table(direction, rows, method, n_clusters, n_fvs, approx):
     name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_rank{rank}.svg"
     plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
 
-def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, sample_size = 10, cp=True, bar=False, bar_width=5, colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, calc_data=True, fig_size=(6.4, 4.8)):
+
+def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=False, bar=True, bar_width=5, colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, fig_size=(6.4, 4.8)):
     """
     Compares clusters from cp and vector_aca_t using ari. Will compare vector_aca_t for every type in types.
     Calculates ari-scores using the true labels and
@@ -89,51 +90,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
     :param direction: the direction of the feature vectors. Options: 'rows', 'columns', and 'tubes'.
     :param true_labels: the true labels of the clustering
     """
-    if cp:
-        cp_scores = []
-        cp_fvs = []
-    vector_aca_scores_per_type = []
-    vector_aca_fvs_per_type = []
-    vector_aca_stdev_per_type = []
-    for i in range(0, len(types)):
-        vector_aca_scores_per_type.append([])
-        vector_aca_fvs_per_type.append([])
-        vector_aca_stdev_per_type.append([])
-    if calc_data:
-        for i in range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors):
-            if cp:
-                labels = cluster("cp", k_clusters, direction, i)
-                ari = adjusted_rand_score(true_labels, labels)
-                cp_scores.append(ari)
-                cp_fvs.append(i)
-            for ty in range(len(types)):
-                aris = []
-                for j in range(sample_size):
-                    labels = cluster("vector_aca_t", k_clusters, direction, i, types[ty])
-                    ari = adjusted_rand_score(true_labels, labels)
-                    aris.append(ari)
-                vector_aca_scores_per_type[ty].append(statistics.mean(aris))
-                vector_aca_fvs_per_type[ty].append(i)
-                vector_aca_stdev_per_type[ty].append(statistics.stdev(aris))
-        if cp:
-            name = f"../saved_fig_data/data(cp,{k_clusters},{direction}_range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors})"
-            np.save(name + "_scores", cp_scores)
-            np.save(name + "_fvs", cp_fvs)
-        for i in range(0, len(types)):
-            name = f"../saved_fig_data/data(type={types[i]},{k_clusters},{direction},range({min_feature_vectors}, {max_feature_vectors}, {delta_feature_vectors}),sample_size={sample_size})"
-            np.save(name + "_scores", vector_aca_scores_per_type[i])
-            np.save(name + "_fvs", vector_aca_fvs_per_type[i])
-            np.save(name + "_stdev", vector_aca_stdev_per_type[i])
-    else:
-        if cp:
-            name = f"../saved_fig_data/data(cp,{k_clusters},{direction}_range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors})"
-            cp_scores = np.load(name + "_scores.npy")
-            cp_fvs = np.load(name + "_fvs.npy")
-        for i in range(0, len(types)):
-            name = f"../saved_fig_data/data(type={types[i]},{k_clusters},{direction},range({min_feature_vectors}, {max_feature_vectors}, {delta_feature_vectors}),sample_size={sample_size})"
-            vector_aca_scores_per_type[i] = np.load(name + "_scores.npy")
-            vector_aca_fvs_per_type[i] = np.load(name + "_fvs.npy")
-            vector_aca_stdev_per_type[i] = np.load(name + "_stdev.npy")
+    vector_aca_scores_per_type, vector_aca_stdev_per_type, vector_aca_fvs_per_type, cp_scores, cp_fvs = get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=calc_data, sample_size=sample_size, cp=cp)
     lgd = []
     fig = plt.figure() 
     fig.set_size_inches(fig_size[0], fig_size[1], forward=True)
@@ -176,6 +133,56 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         name = f"ari({direction},{k_clusters},{types},{cp},range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors}),{sample_size})_barplot.svg"
         plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
+
+
+def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=True):
+    cp_scores = []
+    cp_fvs = []
+    vector_aca_scores_per_type = []
+    vector_aca_fvs_per_type = []
+    vector_aca_stdev_per_type = []
+    for i in range(0, len(types)):
+        vector_aca_scores_per_type.append([])
+        vector_aca_fvs_per_type.append([])
+        vector_aca_stdev_per_type.append([])
+    if calc_data:
+        for i in range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors):
+            if cp:
+                labels = cluster("cp", k_clusters, direction, i)
+                ari = adjusted_rand_score(true_labels, labels)
+                cp_scores.append(ari)
+                cp_fvs.append(i)
+            for ty in range(len(types)):
+                aris = []
+                for j in range(sample_size):
+                    labels = cluster("vector_aca_t", k_clusters, direction, i, types[ty])
+                    ari = adjusted_rand_score(true_labels, labels)
+                    aris.append(ari)
+                vector_aca_scores_per_type[ty].append(statistics.mean(aris))
+                vector_aca_fvs_per_type[ty].append(i)
+                vector_aca_stdev_per_type[ty].append(statistics.stdev(aris))
+        if cp:
+            name = f"../saved_fig_data/data(cp,{k_clusters},{direction}_range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors})"
+            np.save(name + "_scores", cp_scores)
+            np.save(name + "_fvs", cp_fvs)
+        for i in range(0, len(types)):
+            name = f"../saved_fig_data/data(type={types[i]},{k_clusters},{direction},range({min_feature_vectors}, {max_feature_vectors}, {delta_feature_vectors}),sample_size={sample_size})"
+            np.save(name + "_scores", vector_aca_scores_per_type[i])
+            np.save(name + "_fvs", vector_aca_fvs_per_type[i])
+            np.save(name + "_stdev", vector_aca_stdev_per_type[i])
+    else:
+        if cp:
+            name = f"../saved_fig_data/data(cp,{k_clusters},{direction}_range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors})"
+            cp_scores = np.load(name + "_scores.npy")
+            cp_fvs = np.load(name + "_fvs.npy")
+        for i in range(0, len(types)):
+            name = f"../saved_fig_data/data(type={types[i]},{k_clusters},{direction},range({min_feature_vectors}, {max_feature_vectors}, {delta_feature_vectors}),sample_size={sample_size})"
+            vector_aca_scores_per_type[i] = np.load(name + "_scores.npy")
+            vector_aca_fvs_per_type[i] = np.load(name + "_fvs.npy")
+            vector_aca_stdev_per_type[i] = np.load(name + "_stdev.npy")
+
+    return vector_aca_scores_per_type, vector_aca_stdev_per_type, vector_aca_fvs_per_type, cp_scores, cp_fvs
+
 
 
 # ex = get_overview()["exercise"]
