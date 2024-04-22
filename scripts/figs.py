@@ -354,11 +354,11 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
     plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-# type     1            2         3              5         8       10/20
+# type     1            2                 3              5         8       10/20
 colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo']
 
 # Plateaus
-#plot_rel_err(range(5, 51, 5), [1], ['firebrick'], add_matrix_aca_t=False, repeat=50)
+plot_rel_err(range(5, 51, 5), [1], ['firebrick'], add_matrix_aca_t=True, repeat=50)
 #plot_rel_err(range(5, 51, 5), [2], ['indigo'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 41, 5), [3], ['greenyellow'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 31, 3), [5], ['violet'], add_matrix_aca_t=False, repeat=50)
@@ -370,8 +370,9 @@ colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indig
 
 # Multiple types
 #plot_rel_err(range(5, 51, 10), [1, 3, 8, 15], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
-plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
-plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
+#plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3], ['firebrick', 'cornflowerblue', 'greenyellow'], add_matrix_aca_t=False, repeat=50, ptype='line', recompute=True)
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [5, 8, 15], ['violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
 
 
 
