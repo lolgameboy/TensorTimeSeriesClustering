@@ -1,4 +1,5 @@
 from clustering_helpers import *
+from figs import plot_styling
 from sklearn.decomposition import PCA
 from sklearn.metrics.cluster import adjusted_rand_score
 import matplotlib.pyplot as plt
@@ -134,6 +135,48 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
 
+def cluster_ari_single_type(k, 
+                            k_clusters, 
+                            min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
+                            calc_data=True, 
+                            sample_size=10):
+    get_overview()["exercise"]
+
+    data_rows, _, _, _, _ = get_ari_scores([single_type], 
+                                           k_clusters, 
+                                          "rows", 
+                                          k*min_feature_vectors, k*delta_feature_vectors, k*max_feature_vectors, 
+                                          get_overview()["exercise"], 
+                                          calc_data, 
+                                          sample_size)
+    data_tubes, _, _, _, _ = get_ari_scores([single_type], 
+                                            k_clusters, 
+                                            "tubes", 
+                                            min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
+                                            get_overview()["execution_type"], 
+                                            calc_data, 
+                                            sample_size)
+    ys_rows = data_rows[0]
+    ys_tubes = data_tubes[0]
+    xs = range(k*min_feature_vectors, k*max_feature_vectors, k*delta_feature_vectors)
+    xs_minor = range(min_feature_vectors, max_feature_vectors, delta_feature_vectors)
+
+    fig, ax = plt.subplots()
+
+    plt.plot(xs, ys_rows,  color='firebrick',      marker='.', markersize=10, markerfacecolor='white')
+    plt.plot(xs, ys_tubes, color='cornflowerblue', marker='.', markersize=10, markerfacecolor='white')
+
+    plot_styling(fig, ax,
+                xticks=xs,
+                xlabel='Aantal feature vectoren',
+                ylabel='ARI-score',
+                title=f'Clustering van type {k} voor rows en tubes')
+    ax.xticks(xs_minor, fontsize=10, minor=True)
+
+    plt.legend(['rows', 'tubes'])
+
+    plt.show()
+
 
 def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=True):
     cp_scores = []
@@ -195,3 +238,9 @@ def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feat
 # show_clusters("vector_aca_t", 7, 25, 3)
 # show_clusters("cp", 3, 10, 3)
 # show_table(10,"vector_aca_t", 3, 10, 3)
+
+cluster_ari_single_type(3, 
+                        3, 
+                        5, 2, 10,
+                        calc_data=True, 
+                        sample_size=10)
