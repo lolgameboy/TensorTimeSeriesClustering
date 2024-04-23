@@ -138,7 +138,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
 def cluster_ari_single_type(k, 
                             k_clusters, 
                             min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
-                            calc_data=True, 
+                            calc_data=False, 
                             sample_size=10):
 
 
@@ -246,9 +246,3 @@ def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feat
 # show_clusters("vector_aca_t", 7, 25, 3)
 # show_clusters("cp", 3, 10, 3)
 # show_table(10,"vector_aca_t", 3, 10, 3)
-
-cluster_ari_single_type(3, 
-                        3, 
-                        5, 2, 10,
-                        calc_data=False, 
-                        sample_size=10)
