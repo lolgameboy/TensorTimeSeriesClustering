@@ -4,10 +4,8 @@ import pandas as pd
 
 class DAL:
 
-    folder = "data/"
-
     def __init__(self, name):
-        self.datafile = self.folder + name
+        self.datafile = name
 
         if not os.path.isfile(self.datafile):
             ov = pd.DataFrame(columns=["df_key", "description"])
@@ -32,8 +30,8 @@ class DAL:
         ov = ov[ov.df_key != df_key].append(d, ignore_index=True)
         ov.to_hdf(self.datafile, "overview")
 
-# dal = DAL("amie-kinect-data.hdf")
-# ov = dal.overview()
+#dal = DAL("data/amie-kinect-data.hdf")
+#ov = dal.overview()
 # rows = ov
 # execs = dal.get(rows.df_key.values[0])
 
