@@ -165,18 +165,20 @@ def cluster_ari_single_type(type,
     ys_rows = data_rows
     ys_tubes = data_tubes
     xs = range(type*min_term_count, type*max_term_count, type*delta_term_count)
-    xs_terms = range(min_term_count, max_term_count, delta_term_count)
+    xs_second = range(min_term_count, max_term_count, delta_term_count)
 
     fig, ax = plt.subplots()
 
     plt.plot(xs, ys_rows,  color='firebrick',      marker='.', markersize=10, markerfacecolor='white')
     plt.plot(xs, ys_tubes, color='cornflowerblue', marker='.', markersize=10, markerfacecolor='white')
-    
-    ax.set_xticklabels(xs_terms)
+
+    combineLabels = lambda x, y : str(x) + "\n" + str(y)
+    labels = map(combineLabels, xs, xs_second)
+    ax.set_xticklabels(labels)
 
     plot_styling(fig, ax,
                  xticks=xs,
-                 xlabel='Aantal termen',
+                 xlabel='Aantal rij feature vectoren\nAantal tube feature vectoren',
                  ylabel='ARI-score',
                  title=f'Clustering van type {type} voor rows en tubes')
 
