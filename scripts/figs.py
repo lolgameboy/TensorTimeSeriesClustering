@@ -370,8 +370,8 @@ colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indig
 
 # Multiple types
 #plot_rel_err(range(5, 51, 10), [1, 3, 8, 15], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
-plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
-plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
+# plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
+# plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
 
 
 

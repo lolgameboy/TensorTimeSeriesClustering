@@ -76,7 +76,6 @@ def show_table(direction, rows, method, n_clusters, n_fvs, approx):
     name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_rank{rank}.svg"
     plt.savefig("../figures/" + name, transparent=True, bbox_inches=0)
 
-
 def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=False, bar=True, bar_width=5, colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, fig_size=(6.4, 4.8)):
     """
     Compares clusters from cp and vector_aca_t using ari. Will compare vector_aca_t for every type in types.
@@ -180,10 +179,7 @@ def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feat
             vector_aca_scores_per_type[i] = np.load(name + "_scores.npy")
             vector_aca_fvs_per_type[i] = np.load(name + "_fvs.npy")
             vector_aca_stdev_per_type[i] = np.load(name + "_stdev.npy")
-
     return vector_aca_scores_per_type, vector_aca_stdev_per_type, vector_aca_fvs_per_type, cp_scores, cp_fvs
-
-
 
 # ex = get_overview()["exercise"]
 # et = get_overview()["execution_type"]
