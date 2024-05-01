@@ -60,6 +60,33 @@ def calculate_data(ranks, max_approxs, add_matrix_aca_t, repeat=1):
 
     return err_data, count_data
 
+def plot_styling(fig, ax, xticks, xlabel, ylabel, title=None):
+        # x and y axis
+    plt.xlabel(xlabel)
+    plt.xticks(xticks, fontsize=15)
+
+    plt.ylabel(ylabel)
+    plt.yticks(fontsize=15)
+    plt.ylim(bottom=0)
+    plt.grid(axis='y', alpha=0.7)
+
+    xlabel = ax.xaxis.get_label()
+    ylabel = ax.yaxis.get_label()
+
+    xlabel.set_style('italic')
+    ylabel.set_style('italic')
+    xlabel.set_size(18)
+    ylabel.set_size(18)
+
+        # title
+    if title is not None:
+        plt.title(title, fontsize=20)
+        ax.title.set_weight('bold')
+
+        # right and top spines to gray
+    ax.spines['right'].set_color((.8,.8,.8))
+    ax.spines['top'].set_color((.8,.8,.8))
+
 def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, ptype='bar', recompute=False):
     '''
     Plot relative error for different ranks of decomposition for vector_aca_t
@@ -141,26 +168,14 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
         raise Exception('Plot type not recognized.')
 
     # Styling of the plot
-
-        # x and y axis
-    plt.xlabel('Aantal termen')
-    plt.xticks(ranks, fontsize=15)
-
-    plt.ylabel('Relatieve fout')
-    plt.yticks(fontsize=15)
-    plt.ylim(bottom=0)
-    plt.grid(axis='y', alpha=0.7)
-
-    xlabel = ax.xaxis.get_label()
-    ylabel = ax.yaxis.get_label()
-
-    xlabel.set_style('italic')
-    ylabel.set_style('italic')
-    xlabel.set_size(18)
-    ylabel.set_size(18)
+    plot_styling(fig, ax,
+                 xticks=ranks,
+                 xlabel='Aantal termen',
+                 ylabel='Relatieve fout',
+                 title='Relatieve fout van ACA-T methodes per aantal termen')
     plt.subplots_adjust(bottom=0.14, left=0.075)
 
-        # legend
+    # legend
     if len(max_approxs) == 1 and max_approxs[0] == 1:
         lgd = ['Vector ACA-T']
     else:
@@ -169,15 +184,7 @@ def plot_rel_err(ranks, max_approxs, colors, add_matrix_aca_t=False, repeat=50, 
         lgd.append('Matrix ACA-T')
     plt.legend(lgd)
 
-        # title
-    plt.title(f'Relatieve fout van ACA-T methodes per aantal termen', fontsize=20)
-    ax.title.set_weight('bold')
-
-        # right and top spines to gray
-    ax.spines['right'].set_color((.8,.8,.8))
-    ax.spines['top'].set_color((.8,.8,.8))
-
-        # sharpness of plot (not relevant for .svg)
+    # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
@@ -222,23 +229,11 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
         raise Exception('Plot type not recognized.')
 
     # Styling of the plot
-
-        # x and y axis
-    plt.xlabel('Aantal termen')
-    plt.xticks(ranks, fontsize=15)
-
-    plt.ylabel('Relatieve % DTW operaties')
-    plt.yticks(fontsize=15)
-    plt.ylim(bottom=0)
-    plt.grid(axis='y', alpha=0.7)
-
-    xlabel = ax.xaxis.get_label()
-    ylabel = ax.yaxis.get_label()
-
-    xlabel.set_style('italic')
-    ylabel.set_style('italic')
-    xlabel.set_size(18)
-    ylabel.set_size(18)
+    plot_styling(fig, ax,
+                 xticks=ranks,
+                 xlabel='Aantal termen',
+                 ylabel='Relatieve % DTW operaties',
+                 title='Relatieve % DTW operaties van ACA-T methodes per aantal termen')
     plt.subplots_adjust(bottom=0.14, left=0.075)
 
         # legend
@@ -249,14 +244,6 @@ def plot_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, ptype='line
     if add_matrix_aca_t:
         lgd.append('Matrix ACA-T')
     plt.legend(lgd)
-
-        # title
-    plt.title(f'Relatieve % DTW operaties van ACA-T methodes per aantal termen', fontsize=20)
-    ax.title.set_weight('bold')
-
-        # right and top spines to gray
-    ax.spines['right'].set_color((.8,.8,.8))
-    ax.spines['top'].set_color((.8,.8,.8))
 
         # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
@@ -310,26 +297,16 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
         raise Exception('Plot type not recognized.')
 
     # Styling of the plot
-    fig.set_size_inches(2 + 6.4, 4.8, forward=True)
-        # x and y axis
-    plt.xlabel('Relatieve % DTW operaties')
-    plt.xticks(list(map(lambda x: round(x, 1), count_data[-1])), fontsize=15)
-
-    plt.ylabel('Relatieve fout')
-    plt.yticks(fontsize=15)
-    plt.ylim(bottom=0)
-    plt.grid(axis='y', alpha=0.7)
-
-    xlabel = ax.xaxis.get_label()
-    ylabel = ax.yaxis.get_label()
-
-    xlabel.set_style('italic')
-    ylabel.set_style('italic')
-    xlabel.set_size(18)
-    ylabel.set_size(18)
+    fig.set_size_inches(1.4*6.4, 4.8)
+    
+    plot_styling(fig, ax,
+                 xticks=list(map(lambda x: round(x, 1), count_data[-1])),
+                 xlabel='Relatieve % DTW operaties',
+                 ylabel='Relatieve fout',
+                 title='Relatieve fout van ACA-T methodes\n versus hun relatieve % DTW operaties')
     plt.subplots_adjust(bottom=0.14, left=0.1, top=0.85)
 
-        # legend
+    # legend
     if len(max_approxs) == 1 and max_approxs[0] == 1:
         lgd = ['Vector ACA-T']
     else:
@@ -338,27 +315,18 @@ def plot_rel_err_vs_rel_dtw(ranks, max_approxs, colors, add_matrix_aca_t=False, 
         lgd.append('Matrix ACA-T')
     plt.legend(lgd)
 
-        # title
-    plt.title('Relatieve fout van ACA-T methodes\n versus hun relatieve % DTW operaties', fontsize=20)
-    ax.title.set_weight('bold')
-    fig.set_size_inches(1.4*6.4, 4.8)
-
-        # right and top spines to gray
-    ax.spines['right'].set_color((.8,.8,.8))
-    ax.spines['top'].set_color((.8,.8,.8))
-
-        # sharpness of plot (not relevant for .svg)
+    # sharpness of plot (not relevant for .svg)
     #plt.rcParams['figure.dpi'] = 360
 
     # save and show plot
     plt.savefig(f'figures/rel_fout_rel_dtw{str(tuple(max_approxs)).replace(" ", "")}(rpt{repeat})(rnk{ranks[-1]}).svg', transparent=True, bbox_inches=0)
     plt.show()
 
-# type     1            2         3              5         8       10/20
+# type     1            2                 3              5         8       10/20
 colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo']
 
 # Plateaus
-#plot_rel_err(range(5, 51, 5), [1], ['firebrick'], add_matrix_aca_t=False, repeat=50)
+#plot_rel_err(range(5, 51, 5), [1], ['firebrick'], add_matrix_aca_t=True, repeat=50)
 #plot_rel_err(range(5, 51, 5), [2], ['indigo'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 41, 5), [3], ['greenyellow'], add_matrix_aca_t=False, repeat=50)
 #plot_rel_err(range(5, 31, 3), [5], ['violet'], add_matrix_aca_t=False, repeat=50)
@@ -370,8 +338,10 @@ colors = ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indig
 
 # Multiple types
 #plot_rel_err(range(5, 51, 10), [1, 3, 8, 15], ['firebrick', 'greenyellow', 'teal', 'indigo'], add_matrix_aca_t=True, repeat=50, ptype='bar')
-# plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
-# plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
+#plot_rel_err(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=True)
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3, 5, 8, 15], ['firebrick', 'cornflowerblue', 'greenyellow', 'violet', 'teal', 'indigo'], add_matrix_aca_t=False)
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [1, 2, 3], ['firebrick', 'cornflowerblue', 'greenyellow'], add_matrix_aca_t=False, repeat=50, ptype='line', recompute=True)
+#plot_rel_err_vs_rel_dtw(range(5, 51, 10), [5, 8, 15], ['violet', 'teal', 'indigo'], add_matrix_aca_t=False, repeat=50, ptype='line')
 
 
 

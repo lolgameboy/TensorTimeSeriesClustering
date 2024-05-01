@@ -3,7 +3,7 @@ import pandas as pd
 import dtaidistance
 from data_class import DAL
 
-dataset = "../../data/amie-kinect-data.hdf"
+dataset = "data/amie-kinect-data.hdf"
 
 
 def get_people_exercises_sensors():
