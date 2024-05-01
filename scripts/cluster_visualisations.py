@@ -134,58 +134,58 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
         plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
 
-def cluster_ari_single_type(k, 
-                            k_clusters, 
-                            min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
-                            calc_data=False, 
-                            sample_size=10):
-
-
+# final experiment
+def cluster_ari_single_type(type, 
+                            row_cluster_count, 
+                            tube_cluster_count,
+                            min_term_count, delta_term_count, max_term_count, 
+                            row_true_labels, 
+                            tube_true_labels,
+                            calc_data=True, 
+                            sample_size = 10, 
+                            colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, 
+                            fig_size=(6.4, 4.8)):
+    
     # rows (has k feature vectors per term)
-    data_rows, _, _, _, _ = get_ari_scores([k], 
-                                           k_clusters, 
-                                          "rows", 
-                                          k*min_feature_vectors, k*delta_feature_vectors, k*max_feature_vectors, 
-                                          get_overview()["exercise"], 
-                                          calc_data, 
-                                          sample_size)
+    [data_rows], _, _, _, _ = get_ari_scores([type], 
+                                           row_cluster_count, 
+                                           "rows", 
+                                           min_term_count * type, delta_term_count * type, max_term_count * type, 
+                                           row_true_labels, 
+                                           calc_data=calc_data, 
+                                           sample_size=sample_size)
 
-    # tubes (has 1 feature vector per term)
-    _, _, sensors = t.get_people_exercises_sensors()
-    labels = []
-    for i in range(len(sensors)):
-        labels.append(sensors[i][-1])
-
-    data_tubes, _, _, _, _ = get_ari_scores([k], 
-                                            k_clusters, 
+    [data_tubes], _, _, _, _ = get_ari_scores([type], 
+                                            tube_cluster_count, 
                                             "tubes", 
-                                            min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
-                                            labels, 
+                                            min_term_count, delta_term_count, max_term_count, 
+                                            tube_true_labels, 
                                             calc_data, 
                                             sample_size)
-    ys_rows = data_rows[0]
-    ys_tubes = data_tubes[0]
-    xs = range(k*min_feature_vectors, k*max_feature_vectors, k*delta_feature_vectors)
-    xs_minor = range(min_feature_vectors, max_feature_vectors, delta_feature_vectors)
+    ys_rows = data_rows
+    ys_tubes = data_tubes
+    xs = range(type*min_term_count, type*max_term_count, type*delta_term_count)
+    xs_terms = range(min_term_count, max_term_count, delta_term_count)
 
     fig, ax = plt.subplots()
 
     plt.plot(xs, ys_rows,  color='firebrick',      marker='.', markersize=10, markerfacecolor='white')
     plt.plot(xs, ys_tubes, color='cornflowerblue', marker='.', markersize=10, markerfacecolor='white')
+    
+    ax.set_xticklabels(xs_terms)
 
     plot_styling(fig, ax,
                  xticks=xs,
-                 xlabel='Aantal feature vectoren',
+                 xlabel='Aantal termen',
                  ylabel='ARI-score',
-                 title=f'Clustering van type {k} voor rows en tubes')
-    ax.set_xticks(xs_minor, fontsize=10, minor=True)
+                 title=f'Clustering van type {type} voor rows en tubes')
 
     plt.legend(['rows', 'tubes'])
 
     plt.show()
 
 
-def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=True):
+def get_ari_scores(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=False):
     cp_scores = []
     cp_fvs = []
     vector_aca_scores_per_type = []
