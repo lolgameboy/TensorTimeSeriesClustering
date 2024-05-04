@@ -138,7 +138,7 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
 def cluster_ari_single_type(type, 
                             row_cluster_count, 
                             tube_cluster_count,
-                            min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
+                            min_term_count, delta_term_count, max_term_count, 
                             row_true_labels, 
                             tube_true_labels,
                             calc_data=True, 
@@ -150,7 +150,7 @@ def cluster_ari_single_type(type,
     [data_rows], _, _, _, _ = get_ari_scores([type], 
                                            row_cluster_count, 
                                            "rows", 
-                                           min_feature_vectors, delta_feature_vectors, max_feature_vectors, 
+                                           type*min_term_count, type*delta_term_count, type*max_term_count,
                                            row_true_labels, 
                                            calc_data=calc_data, 
                                            sample_size=sample_size)
@@ -158,14 +158,14 @@ def cluster_ari_single_type(type,
     [data_tubes], _, _, _, _ = get_ari_scores([type], 
                                             tube_cluster_count, 
                                             "tubes", 
-                                            min_feature_vectors / type, delta_feature_vectors / type, max_feature_vectors / type, 
+                                            min_term_count, delta_term_count, max_term_count, 
                                             tube_true_labels, 
                                             calc_data, 
                                             sample_size)
     ys_rows = data_rows
     ys_tubes = data_tubes
-    xs = range(type*min_term_count, type*max_term_count, type*delta_term_count)
-    xs_second = range(min_term_count, max_term_count, delta_term_count)
+    xs = range(type*min_term_count, type*max_term_count + 1, type*delta_term_count)
+    xs_second = range(min_term_count, max_term_count + 1, delta_term_count)
 
     fig, ax = plt.subplots()
 
@@ -180,9 +180,12 @@ def cluster_ari_single_type(type,
                  xticks=xs,
                  xlabel='Aantal rij feature vectoren\nAantal tube feature vectoren',
                  ylabel='ARI-score',
-                 title=f'Clustering van type {type} voor rows en tubes')
+                 title=f'Clustering van type {type} voor rijen en tubes')
 
-    plt.legend(['rows', 'tubes'])
+    plt.legend(['rijen', 'tubes'])
+
+    name = f"ari((row,tube),({row_cluster_count},{tube_cluster_count}),{type},range({min_term_count},{max_term_count},{delta_term_count}),{sample_size})_lineplot.svg"
+    plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
 
     plt.show()
 
