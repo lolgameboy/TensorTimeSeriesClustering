@@ -56,7 +56,7 @@ def show_clusters(method, n_clusters, rank, approx):
     plt.savefig("figures/" + name + ".svg", transparent=True, bbox_inches=0)
 
 
-def show_table(direction, rows, method, n_clusters, n_fvs, approx):
+def show_table(direction, rows, method, n_clusters, n_fvs, approx, fig_size=(6.4, 4.8)):
     labels = cluster(method, n_clusters, direction, n_fvs, approx)
     people, exercises, sensors = t.get_people_exercises_sensors()
     if direction == 'rows':
@@ -64,17 +64,23 @@ def show_table(direction, rows, method, n_clusters, n_fvs, approx):
     elif direction == 'tubes':
         data = {"Sensor": sensors, "Cluster": labels}
     table = pd.DataFrame(data=data)
-    plt.figure()
+    fig = plt.figure()
 
     # table
     plt.subplot(111)
 
     cell_text = []
-    for row in range(rows):
+    for row in range(rows-1):
         cell_text.append(table.iloc[row])
-    plt.table(cellText=cell_text, colLabels=table.columns, loc='center')
+    # three dots
+    cell_text.append(["..."] * len(table.columns))
+    cell_text.append(table.iloc[len(table.index)-1])
+    ax = plt.gca()
+    tab = ax.table(cellText=cell_text, colLabels=table.columns, loc='center')
+    tab.auto_set_column_width(list(range(len(table.columns))))
+    fig.set_size_inches(fig_size)
     plt.axis('off')
-    name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_rank{rank}.svg"
+    name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_fvs_{n_fvs}.svg"
     plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
 
 def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=False, bar=True, bar_width=5, colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, fig_size=(6.4, 4.8)):
