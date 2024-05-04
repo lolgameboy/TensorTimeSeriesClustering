@@ -102,11 +102,10 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
             plt.plot(vector_aca_fvs_per_type[i], vector_aca_scores_per_type[i], color=colors[types[i]], marker='.', markersize=10, markerfacecolor='white')
             lgd.append("type " + str(types[i]))
         plt.legend(lgd)
-        plt.ylabel("ARI score")
-        plt.xlabel("Aantal feature vectoren")
-        plt.title("Clustering in 3 clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
+        plot_styling(fig, ax, ax.get_xticks(),"Aantal feature vectoren", "ARI score", "Clustering in 3 clusters met " + direction + " als feature vectoren")
+
         name = f"ari({direction},{k_clusters},{types},{cp},range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors}),{sample_size})_lineplot.svg"
         plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
@@ -124,12 +123,13 @@ def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature
             plt.bar(xs, vector_aca_scores_per_type[i], width=bar_width / min(2, n), color=colors[types[i]], yerr=vector_aca_stdev_per_type[i])
             lgd.append("type " + str(types[i]))
         plt.legend(lgd)
-        plt.ylabel("ARI score")
-        plt.xlabel("Aantal feature vectoren")
-        plt.title("Clustering in " + str(k_clusters) + " clusters met " + direction + " als feature vectoren")
         ax = plt.gca()
         ax.set_ylim([0, 1])
-        plt.xticks(range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors))
+        plot_styling(fig, ax, 
+                     range(min_feature_vectors, max_feature_vectors + 1, delta_feature_vectors),
+                     "Aantal feature vectoren", 
+                     "ARI score",
+                     "Clustering in " + str(k_clusters) + " clusters met " + direction + " als feature vectoren")
         name = f"ari({direction},{k_clusters},{types},{cp},range({min_feature_vectors},{max_feature_vectors},{delta_feature_vectors}),{sample_size})_barplot.svg"
         plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
         plt.show()
