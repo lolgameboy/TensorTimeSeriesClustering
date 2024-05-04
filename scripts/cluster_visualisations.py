@@ -80,7 +80,7 @@ def show_table(direction, rows, method, n_clusters, n_fvs, approx, fig_size=(6.4
     tab.auto_set_column_width(list(range(len(table.columns))))
     fig.set_size_inches(fig_size)
     plt.axis('off')
-    name = f"table_clustering_{n_clusters}_clusters_{method}_type{approx}_fvs_{n_fvs}.svg"
+    name = f"table_clustering_{direction}_{n_clusters}_clusters_{method}_type{approx}_fvs_{n_fvs}.svg"
     plt.savefig("figures/" + name, transparent=True, bbox_inches=0)
 
 def cluster_ari(types, k_clusters, direction, min_feature_vectors, delta_feature_vectors, max_feature_vectors, true_labels, calc_data=True, sample_size = 10, cp=False, bar=True, bar_width=5, colors={1: 'firebrick', 2:'cornflowerblue', 3:'greenyellow', 5:'violet', 8:'teal', 10:'indigo', 20:'indigo'}, fig_size=(6.4, 4.8)):
